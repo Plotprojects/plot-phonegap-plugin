@@ -11,7 +11,7 @@ This plugins supports both IOS and Android.
 ### Installation ###
 
 You can add the plugin to an existing project by executing the following command:
-```phonegap local plugin add PLOT_GITHUB_PATH```
+```phonegap local plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
 
 The following snippet has to be added to the first page that is loaded to initialze Plot:
 ```
