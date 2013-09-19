@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="com.plotprojects.cordova"
+        version="0.1.0">
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+        <!-- TODO: Check if older versions are supported after the plugin has been implemented for both platforms -->
+    </engines>
+    <name>Plot</name>
+    <description>Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.</description>
+    <author>Floating Market B.V.</author>
+    <keywords>plot,plotprojects,location,notification</keywords>
+    <license>Apache 2.0 License</license>
+    <js-module src="plot.js" name="Plot">
+        <clobbers target="plot" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="PlotCordovaPlugin">
+                <param name="android-package" value="com.plotprojects.cordova.PlotCordovaPlugin" />
+            </feature>
+        </config-file>
+
+
+        <source-file src="src/android/plot_v_1_4_2.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+            <uses-permission android:name="android.permission.VIBRATE"/>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver android:name= "com.plotprojects.retail.android.PlotBootReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                    <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                    <category android:name="android.intent.category.HOME" />
+                </intent-filter>
+            </receiver>
+
+            <receiver android:exported="false" android:name="com.plotprojects.retail.android.OpenUriReceiver">
+                <intent-filter>
+                    <action android:name="$PACKAGE_NAME.plot.OpenNotification" />
+                </intent-filter>
+            </receiver>
+
+            <service android:name="com.plotprojects.retail.android.PlotBackgroundService"
+                     android:process=":PlotProcess">
+                <meta-data android:name="debug" android:value="false" />
+            </service>
+        </config-file>
+
+
+    </platform>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="PlotCordovaPlugin">
+                <param name="ios-package" value="PlotCordovaPlugin" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/PlotCordovaPlugin.h" />
+        <source-file src="src/ios/PlotCordovaPlugin.m" />
+
+        <header-file src="src/ios/Plot.h" />
+        <source-file src="src/ios/libPlot-1_4_2.a" framework="true" />
+
+        <framework src="libsqlite3.dylib" />
+
+        <!--Add background mode here when fixed: https://issues.apache.org/jira/browse/CB-4731 -->
+    </platform>
+    <info>Please see our plugin documentation for more information: http://www.plotprojects.com/plot-app-library-documentation-latest/</info>
+</plugin>
