@@ -67,7 +67,7 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-1_4_2.a" framework="true" />
+        <source-file src="src/ios/libPlot-1_4_3.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
 

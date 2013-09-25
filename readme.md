@@ -1,4 +1,3 @@
-
 Plot PhoneGap Plugin
 ====================
 Install Plot into your PhoneGap/Cordova app quickly
@@ -28,8 +27,18 @@ function deviceReady() {
 
 You can obtain the public key at: http://www.plotprojects.com/
 
+IOS requires a manual step due to a bug in PhoneGap. You have to specify manually that the app requires location services in the background. Add the following lines of code to the ```dict``` section of PROJECTNAME-Info.plist:
+```
+<key>UIBackgroundModes</key>
+<array>
+  <string>location</string>
+</array>
+```
+
 ### More information ###
-http://www.plotprojects.com/
+Website: http://www.plotprojects.com/
+Android plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/
+IOS plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-ios/
 
 ### License ###
 The source files included in the repository are released under the Apache License, Version 2.0.
