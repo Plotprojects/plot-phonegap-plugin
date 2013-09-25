@@ -37,7 +37,9 @@ IOS requires a manual step due to a bug in PhoneGap. You have to specify manuall
 
 ### More information ###
 Website: http://www.plotprojects.com/
+
 Android plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/
+
 IOS plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-ios/
 
 ### License ###
