@@ -37,7 +37,7 @@ cordova.define("cordova/plugin/plot", function(require, exports, module) {
 	plot._runFilterCallback = function(notifications) {
 		if (initialized) {
 			var result = plot.filterCallback(notifications);
-			cordova.exec(undefined, undefined, "PlotCordovaPlugin", "filterCallbackComplete", [notifications]);
+			cordova.exec(undefined, undefined, "PlotCordovaPlugin", "filterCallbackComplete", [result]);
 		} else {
 			notificationsToFilter.push(notifications);
 		}
