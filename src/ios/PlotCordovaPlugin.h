@@ -8,7 +8,10 @@
 
 #import <Cordova/CDV.h>
 
-@interface PlotCordovaPlugin : CDVPlugin<PlotDelegate>
+@interface PlotCordovaPlugin : CDVPlugin<PlotDelegate> {
+    PlotFilterNotifications* filterNotifications;
+    NSTimer* filterNotificationsTimeoutTimer;
+}
 
 
 

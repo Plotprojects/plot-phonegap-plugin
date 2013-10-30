@@ -38,6 +38,26 @@ IOS requires a manual step due to a bug in PhoneGap. You have to specify manuall
 </array>
 ```
 
+To intercept notifications before they are shown you can use the filterCallback. This feature is only available on IOS.
+```
+//Optional, by default all notifications are sent:
+plot.filterCallback = function(notifications) {
+  for (var i = 0; i < notifications.length; i++) {
+    notifications[i].message = "NewMessage";
+    notifications[i].data = "http://www.example.com";
+  }
+	return notifications;
+};
+```
+
+To change the action when a notification has been received you can use the notificationHandler. This feature is available both on IOS and Android.
+```
+//Optional, by default the data is treated as URL and opened in a separate application:
+plot.notificationHandler = function(notification, data) {
+  alert(data);
+}
+```
+
 ### More information ###
 Website: http://www.plotprojects.com/
 

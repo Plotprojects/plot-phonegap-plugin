@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="0.1.0">
+        version="1.1.0">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
         <!-- TODO: Check if older versions are supported after the plugin has been implemented for both platforms -->
@@ -26,6 +26,7 @@
 
         <source-file src="src/android/plot_v_1_4_2.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
+        <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -43,7 +44,7 @@
                 </intent-filter>
             </receiver>
 
-            <receiver android:exported="false" android:name="com.plotprojects.retail.android.OpenUriReceiver">
+            <receiver android:exported="false" android:name="com.plotprojects.cordova.PlotCordovaNotificationOpenReceiver">
                 <intent-filter>
                     <action android:name="$PACKAGE_NAME.plot.OpenNotification" />
                 </intent-filter>

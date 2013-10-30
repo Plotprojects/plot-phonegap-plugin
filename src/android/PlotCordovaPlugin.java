@@ -1,16 +1,54 @@
 package com.plotprojects.cordova;
 
-import org.apache.cordova.CordovaPlugin;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
+import com.plotprojects.retail.android.FilterableNotification;
+import com.plotprojects.retail.android.Plot;
+import com.plotprojects.retail.android.PlotConfiguration;
 import org.apache.cordova.CallbackContext;
-
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.plotprojects.retail.android.Plot;
-import com.plotprojects.retail.android.PlotConfiguration;
-
 public class PlotCordovaPlugin extends CordovaPlugin {
+
+    @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+
+        handleIntent(cordova.getActivity().getIntent());
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("originalPlotIntent")) {
+            Intent originalIntent = intent.getParcelableExtra("originalPlotIntent");
+            originalIntent.setExtrasClassLoader(getClass().getClassLoader());
+            FilterableNotification notification = originalIntent.getParcelableExtra("notification");
+
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", notification.getId());
+                jsonObject.put("message", notification.getMessage());
+                jsonObject.put("data", notification.getData());
+
+                String javascript = "cordova.require(\"cordova/plugin/plot\")._runNotificationHandler($handler)".replace("$handler", jsonObject.toString());
+
+                webView.sendJavascript(javascript);
+            } catch (JSONException e) {
+                Log.e("PlotCordovaPlugin", "Failed to write JSON", e);
+            }
+        }
+    }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -29,12 +67,14 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             callbackContext.success();
         } else if ("getVersion".equals(action)) {
             this.getVersion(callbackContext);
+        } else if ("defaultNotificationHandler".equals(action)) {
+            this.defaultNotificationHandler(args, callbackContext);
         } else {
             return false;
         }
         return true;
     }
-    
+
     private void initPlot(JSONArray args, CallbackContext callbackContext) {
         try {
             JSONObject jsonConfiguration;
@@ -65,14 +105,14 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             } catch (JSONException e) {
                 callbackContext.error("Enable on first run not specified correctly.");
                 return;
-            }        
+            }
             Plot.init(cordova.getActivity(), configuration);
             callbackContext.success();
         } catch (Exception e) {
             callbackContext.error(e.getMessage());
         }
     }
-    
+
     private void enable(CallbackContext callbackContext) {
         try {
             Plot.enable();
@@ -81,7 +121,7 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
     }
-    
+
     private void disable(CallbackContext callbackContext) {
         try {
             Plot.disable();
@@ -90,7 +130,7 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
     }
-    
+
     private void isEnabled(CallbackContext callbackContext) {
         try {
             boolean isEnabled = Plot.isEnabled();
@@ -99,7 +139,7 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
     }
-    
+
     private void setCooldownPeriod(JSONArray args, CallbackContext callbackContext) {
         try {
             try {
@@ -113,11 +153,29 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
     }
-    
+
     private void getVersion(CallbackContext callbackContext) {
         try {
             String version = Plot.getVersion();
             callbackContext.success(version);
+        } catch (Exception e) {
+            callbackContext.error(e.getMessage());
+        }
+    }
+
+    private void defaultNotificationHandler(JSONArray args, CallbackContext callbackContext) {
+        try {
+            String data = args.getString(1);
+
+            Uri uri = Uri.parse(data);
+
+            Intent openBrowserIntent = new Intent(Intent.ACTION_VIEW, uri);
+            openBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            Context context = cordova.getActivity();
+            context.startActivity(openBrowserIntent);
+
+            callbackContext.success();
         } catch (Exception e) {
             callbackContext.error(e.getMessage());
         }
