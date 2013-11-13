@@ -23,7 +23,7 @@ extern const NSString* PlotNotificationIsAppInForegroundKey;
 @protocol PlotDelegate <NSObject>
 
 @optional
--(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)action;
+-(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data;
 
 -(void)plotFilterNotifications:(PlotFilterNotifications*)filterNotifications;
 
