@@ -1,6 +1,6 @@
 cordova.define("cordova/plugin/plot", function(require, exports, module) {
 	plot = {};
-	plot.exampleConfiguration = { "publicKey": "", "cooldownPeriod": -1, "enableOnFirstRun": true, "enableBackgroundModeWarning": true };
+	plot.exampleConfiguration = { "publicKey": "", "cooldownPeriod": -1, "enableOnFirstRun": true };
     
   var notificationsToShow = [];
   var notificationsToFilter = [];
@@ -71,9 +71,6 @@ cordova.define("cordova/plugin/plot", function(require, exports, module) {
 	};
 	plot.setCooldownPeriod = function(cooldownSeconds, successCallback, failureCallback) {
 		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setCooldownPeriod", [cooldownSeconds]);
-	};
-	plot.setEnableBackgroundModeWarning = function(enableWarning, successCallback, failureCallback) {
-		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setEnableBackgroundModeWarning", [enableWarning]);
 	};
 	plot.getVersion = function(successCallback, failureCallback) {
 		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "getVersion", []);

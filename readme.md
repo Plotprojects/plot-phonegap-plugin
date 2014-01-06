@@ -30,14 +30,6 @@ function deviceReady() {
 
 You can obtain the public key at: http://www.plotprojects.com/
 
-IOS requires a manual step due to a bug in PhoneGap. You have to specify manually that the app requires location services in the background. Add the following lines of code to the ```dict``` section of PROJECTNAME-Info.plist:
-```
-<key>UIBackgroundModes</key>
-<array>
-  <string>location</string>
-</array>
-```
-
 To intercept notifications before they are shown you can use the filterCallback. This feature is only available on IOS.
 ```
 //Optional, by default all notifications are sent:

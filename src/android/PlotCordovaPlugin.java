@@ -62,9 +62,6 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             this.isEnabled(callbackContext);
         } else if ("setCooldownPeriod".equals(action)) {
             this.setCooldownPeriod(args, callbackContext);
-        } else if ("setEnableBackgroundModeWarning".equals(action)) {
-            // Not available on Android
-            callbackContext.success();
         } else if ("getVersion".equals(action)) {
             this.getVersion(callbackContext);
         } else if ("defaultNotificationHandler".equals(action)) {

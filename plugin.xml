@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.1.1">
+        version="1.5.0">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
         <!-- TODO: Check if older versions are supported after the plugin has been implemented for both platforms -->
@@ -68,11 +68,10 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-1_4_4.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_5_0.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
 
-        <!--Add background mode here when fixed: https://issues.apache.org/jira/browse/CB-4731 -->
     </platform>
     <info>Please see our plugin documentation for more information: http://www.plotprojects.com/plot-app-library-documentation-latest/</info>
 </plugin>

@@ -58,11 +58,6 @@ static NSDictionary* launchOptions;
             [config setEnableOnFirstRun:[enableOnFirstRun boolValue]];
         }
         
-        NSNumber* enableBackgroundModeWarning = [args objectForKey:@"enableBackgroundModeWarning"];
-        if (enableBackgroundModeWarning != nil) {
-            [config setEnableBackgroundModeWarning:[enableBackgroundModeWarning boolValue]];
-        }
-        
         [Plot initializeWithConfiguration:config launchOptions:launchOptions];
         launchOptions = nil;
     }
@@ -98,14 +93,6 @@ static NSDictionary* launchOptions;
     
     [Plot setCooldownPeriod:period.intValue];
     
-    
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
--(void)setEnableBackgroundModeWarning:(CDVInvokedUrlCommand*)command {
-    NSNumber* backgroundWarningEnabled = [command.arguments objectAtIndex:0];
-    [Plot setEnableBackgroundModeWarning:(backgroundWarningEnabled.intValue != 0) ? YES : NO];
     
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
