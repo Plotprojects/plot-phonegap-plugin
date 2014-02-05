@@ -2,10 +2,9 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.5.0">
+        version="1.5.2">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
-        <!-- TODO: Check if older versions are supported after the plugin has been implemented for both platforms -->
     </engines>
     <name>Plot</name>
     <description>Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.</description>
@@ -24,7 +23,7 @@
         </config-file>
 
 
-        <source-file src="src/android/plot_v_1_4_2.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/Plot_v_1_5_0.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
@@ -68,7 +67,7 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_5_0.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_5_2.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
 
