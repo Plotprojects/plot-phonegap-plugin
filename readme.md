@@ -2,6 +2,8 @@ Plot PhoneGap Plugin
 ====================
 Install Plot into your PhoneGap/Cordova app quickly
 
+Get location based notifications in your PhoneGap app! Now also experimental support for iBeacon in the iOS version.
+
 ### Supported platforms ###
 
 This plugins requires PhoneGap 3.0.0 or higher.
