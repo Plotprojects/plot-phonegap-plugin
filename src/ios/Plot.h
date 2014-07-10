@@ -2,13 +2,26 @@
 //  Plot.h
 //  Plot
 //
-//  Copyright (c) 2013 Floating Market B.V. All rights reserved.
+//  Copyright (c) 2014 Floating Market B.V. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-extern const NSString* PlotNotificationActionKey;
-extern const NSString* PlotNotificationIsAppInForegroundKey;
+//Keys for userInfo properties in UILocalNotifications created by Plot:
+
+extern NSString* const PlotNotificationActionKey;
+extern NSString* const PlotNotificationDataKey; //synonym for PlotNotificationActionKey
+extern NSString* const PlotNotificationIsAppInForegroundKey;
+extern NSString* const PlotNotificationIsBeacon;
+extern NSString* const PlotNotificationTrigger;
+extern NSString* const PlotNotificationGeofenceLatitude;
+extern NSString* const PlotNotificationGeofenceLongitude;
+
+
+//values for PlotNotificationTrigger:
+extern NSString* const PlotNotificationTriggerEnter;
+extern NSString* const PlotNotificationTriggerExit;
+
 
 @class UILocalNotification;
 
@@ -35,7 +48,7 @@ extern const NSString* PlotNotificationIsAppInForegroundKey;
 @property (strong, nonatomic) NSString* publicKey;
 @property (strong, nonatomic) id<PlotDelegate> delegate;
 @property (assign, nonatomic) BOOL enableOnFirstRun;
-@property (assign, nonatomic) BOOL enableBackgroundModeWarning;
+@property (assign, nonatomic) BOOL enableBackgroundModeWarning __attribute__((deprecated));
 
 -(id)initWithPublicKey:(NSString*)publicKey delegate:(id<PlotDelegate>)delegate;
 
@@ -44,7 +57,7 @@ extern const NSString* PlotNotificationIsAppInForegroundKey;
 @interface PlotBase : NSObject
 
 +(void)initializeWithPublicKey:(NSString*)key launchOptions:(NSDictionary *)launchOptions __attribute__((deprecated));
-+(void)initializeWithPublicKey:(NSString*)key launchOptions:(NSDictionary *)launchOptions delegate:(id<PlotDelegate>)delegate;
++(void)initializeWithPublicKey:(NSString*)key launchOptions:(NSDictionary *)launchOptions delegate:(id<PlotDelegate>)delegate __attribute__((deprecated));
 +(void)initializeWithConfiguration:(PlotConfiguration*)configuration launchOptions:(NSDictionary *)launchOptions;
 
 +(void)enable;
@@ -53,7 +66,7 @@ extern const NSString* PlotNotificationIsAppInForegroundKey;
 
 +(void)setCooldownPeriod:(int)secondsCooldown;
 
-+(void)setEnableBackgroundModeWarning:(BOOL)enabled;
++(void)setEnableBackgroundModeWarning:(BOOL)enabled __attribute__((deprecated));
 
 +(BOOL)isEnabled;
 
