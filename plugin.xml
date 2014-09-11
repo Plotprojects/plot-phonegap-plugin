@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.6.0">
+        version="1.6.2">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -23,7 +23,7 @@
         </config-file>
 
 
-        <source-file src="src/android/Plot_v_1_6_0.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/Plot_v_1_6_1.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
@@ -69,10 +69,13 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_6_0.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_6_2.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
-
+        
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+					<string>Your location is used to instantly inform you when you are near a location that is interesting to you.</string>
+				</config-file>
     </platform>
     <info>Please see our plugin documentation for more information: http://www.plotprojects.com/plot-app-library-documentation-latest/</info>
 </plugin>
