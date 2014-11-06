@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.6.4">
+        version="1.6.4b">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -71,6 +71,7 @@
         <source-file src="src/ios/libPlot-v1_6_4.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
+        <framework src="CoreLocation.framework" />
         
         <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
 					<string>Your location is used to instantly inform you when you are near a location that is interesting to you.</string>
