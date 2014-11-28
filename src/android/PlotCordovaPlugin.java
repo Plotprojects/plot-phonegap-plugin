@@ -66,6 +66,8 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             this.getVersion(callbackContext);
         } else if ("defaultNotificationHandler".equals(action)) {
             this.defaultNotificationHandler(args, callbackContext);
+        } else if ("mailDebugLog".equals(action)) {
+            this.mailDebugLog(callbackContext);
         } else {
             return false;
         }
@@ -155,6 +157,15 @@ public class PlotCordovaPlugin extends CordovaPlugin {
         try {
             String version = Plot.getVersion();
             callbackContext.success(version);
+        } catch (Exception e) {
+            callbackContext.error(e.getMessage());
+        }
+    }
+
+    private void mailDebugLog(CallbackContext callbackContext) {
+        try {
+            Plot.mailDebugLog();
+            callbackContext.success();
         } catch (Exception e) {
             callbackContext.error(e.getMessage());
         }

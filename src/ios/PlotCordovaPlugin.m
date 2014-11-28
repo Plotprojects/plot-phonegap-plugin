@@ -1,10 +1,11 @@
 //
 //  PlotPlugin.m
-//
+//  http://www.plotprojects.com/
 //
 
 #import "PlotCordovaPlugin.h"
 #import "Plot.h"
+#import <UIKit/UIKit.h>
 
 @implementation PlotCordovaPlugin
 
@@ -183,5 +184,12 @@ static NSDictionary* launchOptions;
     filterNotifications = nil;
 }
 
+//The data for the debug log on iOS is only collected when the DEBUG preprocessor macro is set.
+-(void)mailDebugLog:(CDVInvokedUrlCommand*)command {
+    [Plot mailDebugLog:self.viewController];
+    
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
 
 @end

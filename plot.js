@@ -75,6 +75,11 @@ cordova.define("cordova/plugin/plot", function(require, exports, module) {
 	plot.getVersion = function(successCallback, failureCallback) {
 		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "getVersion", []);
 	};
+	
+	//The data for the debug log on iOS is only collected when the DEBUG preprocessor macro is set.
+	plot.mailDebugLog = function(successCallback, failureCallback) {
+		cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "mailDebugLog", [])
+	};
 	module.exports = plot;
 });
 
