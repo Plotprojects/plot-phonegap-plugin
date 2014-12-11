@@ -14,11 +14,19 @@
 
 #import <Foundation/Foundation.h>
 
-/** 
+@class UIViewController;
+
+/**
  * \memberof Plot
  * Key for userInfo properties in UILocalNotifications created by Plot.
  */
 extern NSString* const PlotNotificationIdentifier;
+
+/**
+ * \memberof Plot
+ * Key for userInfo properties in UILocalNotifications created by Plot.
+ */
+extern NSString* const PlotNotificationMessage;
 
 /**
  * \memberof Plot
@@ -112,7 +120,7 @@ extern NSString* const PlotNotificationTriggerExit;
 @protocol PlotDelegate <NSObject>
 
 @optional
-/** Implement this method if you donâ€™t want a browser to be opened when a notification is received, but instead you want to provide a custom handler.
+/** Implement this method if you don’t want a browser to be opened when a notification is received, but instead you want to provide a custom handler.
  * @param notification The received local notification.
  * @param data The custom handler.
  */
@@ -161,8 +169,8 @@ extern NSString* const PlotNotificationTriggerExit;
 @end
 
 /**
-  * The main methods to control the beheavior of Plot.
-  */
+ * The main methods to control the beheavior of Plot.
+ */
 @interface PlotBase : NSObject
 
 /**
@@ -176,7 +184,7 @@ extern NSString* const PlotNotificationTriggerExit;
 /**
  * \deprecated
  * Before you can make use of the other functionality within Plot, you have to call an initialization method (initializeWithConfiguration:launchOptions: is preferred).
- * Normally you want to call this method inside -(BOOL)application:didFinishLaunchingWithOptions:. If the Plot library was enabled last time, it will be enabled again. 
+ * Normally you want to call this method inside -(BOOL)application:didFinishLaunchingWithOptions:. If the Plot library was enabled last time, it will be enabled again.
  * When the app is launched because the user tapped on a notification, then that notification will be opened.
  * @param key Public key from plot projects used to identify your app.
  * @param launchOptions Specific options used on launch, can be used to pass options as user.
@@ -190,7 +198,7 @@ extern NSString* const PlotNotificationTriggerExit;
  */
 +(void)initializeWithConfiguration:(PlotConfiguration*)configuration launchOptions:(NSDictionary *)launchOptions;
 
-/** Enables the functionality of the Plot library. When the user hasnâ€™t consented to the use of location services, he will be asked at this point.
+/** Enables the functionality of the Plot library. When the user hasn’t consented to the use of location services, he will be asked at this point.
  */
 +(void)enable;
 
@@ -205,12 +213,12 @@ extern NSString* const PlotNotificationTriggerExit;
 
 /**
  * \deprecated
- * No longer used. Doesnâ€™t do anything.
+ * No longer used. Doesn’t do anything.
  * @param enabled Enabled background warning mode.
  */
 +(void)setEnableBackgroundModeWarning:(BOOL)enabled __attribute__((deprecated));
 
-/** Returns whether the library is enabled. Could return NO when the initialization of the library hasnâ€™t completed yet.
+/** Returns whether the library is enabled. Could return NO when the initialization of the library hasn’t completed yet.
  */
 +(BOOL)isEnabled;
 
@@ -229,6 +237,12 @@ extern NSString* const PlotNotificationTriggerExit;
 /** Returns the current version of the Plot plugin.
  */
 +(NSString*)version;
+
+/**
+ * Sends the developer log. Only use this when compiling for DEBUG. When the log is unavailable, then an alert is shown.
+ * @param viewController viewController to place the mail view on top of
+ */
++(void)mailDebugLog:(UIViewController*)viewController;
 
 @end
 

@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.6.6">
+        version="1.7.0">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -23,7 +23,7 @@
         </config-file>
 
 
-        <source-file src="src/android/Plot_v_1_6_6.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/Plot_v_1_7_0.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
@@ -51,8 +51,7 @@
                 </intent-filter>
             </receiver>
 
-            <service android:name="com.plotprojects.retail.android.PlotBackgroundService"
-                     android:process=":PlotProcess">
+            <service android:name="com.plotprojects.retail.android.PlotBackgroundService">
                 <meta-data android:name="debug" android:value="false" />
             </service>
             
@@ -73,7 +72,7 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_6_6.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_7_0.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
