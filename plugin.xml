@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.7.2">
+        version="1.8.0">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -23,7 +23,7 @@
         </config-file>
 
 
-        <source-file src="src/android/Plot_v_1_7_2.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/Plot_v_1_8_0.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
@@ -35,6 +35,9 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
+        		<activity android:name="com.plotprojects.retail.android.LandingPageActivity"
+                  android:configChanges="orientation|screenSize" />
+                  
             <receiver android:name= "com.plotprojects.retail.android.PlotBootReceiver">
                 <intent-filter>
                     <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -72,7 +75,7 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_7_0.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_8_0.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
