@@ -16,8 +16,10 @@ You can add the plugin to an existing project by executing the following command
 or 
 ```cordova plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
 in case you are using Cordova.
+or add this to your config.xml if you are using PhoneGap Build:
+```<gap:plugin name="com.plotprojects.cordova" source="plugins.cordova.io" />```
 
-The following snippet has to be added to the first page that is loaded to initialze Plot:
+The following snippet has to be added to the first page that is loaded to initialize Plot:
 ```
 <script type="text/javascript">
 document.addEventListener("deviceready", deviceReady, true);
@@ -54,6 +56,8 @@ plot.notificationHandler = function(notification, data) {
 
 ### More information ###
 Website: http://www.plotprojects.com/
+
+Documentation: http://www.plotprojects.com/support
 
 Android plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/
 
