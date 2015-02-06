@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.8.0">
+        version="1.8.1">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -75,7 +75,7 @@
         <source-file src="src/ios/PlotCordovaPlugin.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_8_0.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_8_1.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
