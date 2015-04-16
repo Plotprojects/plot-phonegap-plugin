@@ -45,6 +45,9 @@ cordova.define("cordova/plugin/plot", function(require, exports, module) {
   
     
 	plot.init = function(configuration, successCallback, failureCallback) {
+         if (configuration === undefined || configuration === null) {
+            configuration = {};
+         }
 		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "initPlot", [configuration]);
 		 initialized = true;
 		 

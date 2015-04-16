@@ -76,38 +76,49 @@ public class PlotCordovaPlugin extends CordovaPlugin {
 
     private void initPlot(JSONArray args, CallbackContext callbackContext) {
         try {
-            JSONObject jsonConfiguration;
+            JSONObject jsonConfiguration = null;
             try {
-                jsonConfiguration = args.getJSONObject(0);
+                if (args.length() > 0) {
+                    jsonConfiguration = args.getJSONObject(0);
+                }
             } catch (JSONException e) {
                 callbackContext.error("Configuration not specified or not specified correctly.");
                 return;
             }
-            String publicKey;
+            String publicKey = null;
             try {
-                publicKey = jsonConfiguration.getString("publicKey");
+                if (jsonConfiguration != null && jsonConfiguration.has("publicKey")) {
+                    publicKey = jsonConfiguration.getString("publicKey");
+                }
             } catch (JSONException e) {
-                callbackContext.error("Public key not specified or not specified correctly.");
+                callbackContext.error("Public token not specified or not specified correctly.");
                 return;
             }
-            PlotConfiguration configuration = new PlotConfiguration(publicKey);
-            try {
-                if (jsonConfiguration.has("cooldownPeriod"))
-                    configuration.setCooldownPeriod(jsonConfiguration.getInt("cooldownPeriod"));
-            } catch (JSONException e) {
-                callbackContext.error("Cooldown period not specified correctly.");
-                return;
+            if (publicKey != null) {
+                PlotConfiguration configuration = new PlotConfiguration(publicKey);
+                try {
+                    if (jsonConfiguration.has("cooldownPeriod")) {
+                        configuration.setCooldownPeriod(jsonConfiguration.getInt("cooldownPeriod"));
+                    }
+                } catch (JSONException e) {
+                    callbackContext.error("Cooldown period not specified correctly.");
+                    return;
+                }
+                try {
+                    if (jsonConfiguration.has("enableOnFirstRun")) {
+                        configuration.setEnableOnFirstRun(jsonConfiguration.getBoolean("enableOnFirstRun"));
+                    }
+                } catch (JSONException e) {
+                    callbackContext.error("Enable on first run not specified correctly.");
+                    return;
+                }
+                Plot.init(cordova.getActivity(), configuration);
+            } else {
+                Plot.init(cordova.getActivity());
             }
-            try {
-                if (jsonConfiguration.has("enableOnFirstRun"))
-                    configuration.setEnableOnFirstRun(jsonConfiguration.getBoolean("enableOnFirstRun"));
-            } catch (JSONException e) {
-                callbackContext.error("Enable on first run not specified correctly.");
-                return;
-            }
-            Plot.init(cordova.getActivity(), configuration);
             callbackContext.success();
         } catch (Exception e) {
+            Log.e("PlotCordovaPlugin", "Error during plotInit", e);
             callbackContext.error(e.getMessage());
         }
     }

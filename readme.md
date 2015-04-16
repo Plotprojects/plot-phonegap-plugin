@@ -7,16 +7,17 @@ Get location based notifications in your PhoneGap app! Now also experimental sup
 ### Supported platforms ###
 
 This plugins requires PhoneGap 3.0.0 or higher.
-This plugins supports both IOS and Android.
+This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
 ### Installation ###
 
 You can add the plugin to an existing project by executing the following command:
-```phonegap local plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
-or 
-```cordova plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
-in case you are using Cordova.
-or add this to your config.xml if you are using PhoneGap Build:
+
+Phonegap: ```phonegap local plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
+ 
+Cordova: ```cordova plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
+
+Or add this to your config.xml when you are using PhoneGap Build:
 ```<gap:plugin name="com.plotprojects.cordova" source="plugins.cordova.io" />```
 
 The following snippet has to be added to the first page that is loaded to initialize Plot:
@@ -25,18 +26,17 @@ The following snippet has to be added to the first page that is loaded to initia
 document.addEventListener("deviceready", deviceReady, true);
 function deviceReady() {
   var plot = cordova.require("cordova/plugin/plot");
-  var config = plot.exampleConfiguration;
-  config.publicKey = "REPLACE_ME"; //put your public key here
-  plot.init(config);
+  plot.init({});
 }
 </script>
 ```
 
-You can obtain the public key at: http://www.plotprojects.com/
+Before you can use this plugin you have to put `plotconfig.json` in the `www/` folder. You can obtain your `plotconfig.json` with your own public token for free at: http://www.plotprojects.com/getourplugin/ 
 
 To intercept notifications before they are shown you can use the filterCallback. This feature is only available on IOS.
 ```
 //Optional, by default all notifications are sent:
+//Place this function BEFORE plot.init();
 plot.filterCallback = function(notifications) {
   for (var i = 0; i < notifications.length; i++) {
     notifications[i].message = "NewMessage";
@@ -49,6 +49,7 @@ plot.filterCallback = function(notifications) {
 To change the action when a notification has been received you can use the notificationHandler. This feature is available both on IOS and Android.
 ```
 //Optional, by default the data is treated as URL and opened in a separate application:
+//Place this function BEFORE plot.init();
 plot.notificationHandler = function(notification, data) {
   alert(data);
 }

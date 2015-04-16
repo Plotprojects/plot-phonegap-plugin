@@ -36,12 +36,11 @@ static NSDictionary* launchOptions;
 +(void)didReceiveLocalNotification:(NSNotification*)notification {
     UILocalNotification* localNotification = [notification object];
     [Plot handleNotification:localNotification];
-    
 }
 
 -(void)initPlot:(CDVInvokedUrlCommand*)command {
     if  (launchOptions != nil) {
-        NSDictionary* args = [command.arguments objectAtIndex:0];
+        NSDictionary* args = (command.arguments.count > 0u) ? [command.arguments objectAtIndex:0] : nil;
         
         NSString* publicKey = [args objectForKey:@"publicKey"];
         
@@ -59,7 +58,19 @@ static NSDictionary* launchOptions;
             [config setEnableOnFirstRun:[enableOnFirstRun boolValue]];
         }
         
-        [Plot initializeWithConfiguration:config launchOptions:launchOptions];
+        NSMutableDictionary* extendedLaunchOptions = [NSMutableDictionary dictionaryWithDictionary:launchOptions];
+        
+        [extendedLaunchOptions setObject:[NSNumber numberWithBool:YES] forKey:@"plot-use-file-config"];
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        if ([[args objectForKey:@"debug"] boolValue]) {
+            [PlotDebug initializeWithConfiguration:config launchOptions:extendedLaunchOptions];
+        } else {
+            [PlotRelease initializeWithConfiguration:config launchOptions:extendedLaunchOptions];
+        }
+#pragma clang diagnostic pop
+        
         launchOptions = nil;
     }
     
