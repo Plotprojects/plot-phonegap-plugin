@@ -9,7 +9,29 @@ Get location based notifications in your PhoneGap app! Now also experimental sup
 This plugins requires PhoneGap 3.0.0 or higher.
 This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
-### Installation ###
+### Phonegap Build ###
+Due to an issue with Phonegap Build, only version 1.9.0 is supported on Phonegap Build.
+
+Add the following line to `www/config.xml` to add our plugin:
+
+```<gap:plugin name="com.plotprojects.cordova" source="plugins.cordova.io" version="1.9.0" />```
+
+And you can initialise Plot using the following snippet:
+```
+<script type="text/javascript">
+document.addEventListener("deviceready", deviceReady, true);
+function deviceReady() {
+  var plot = cordova.require("cordova/plugin/plot");
+  var config = plot.exampleConfiguration;
+  config.publicKey = "REPLACE_ME"; //put your public key here
+  plot.init(config);
+}
+</script>
+```
+
+File based configuration doesn't work yet in this version.
+
+### Installation other environments ###
 
 You can add the plugin to an existing project by executing the following command:
 
@@ -17,8 +39,6 @@ Phonegap: ```phonegap local plugin add https://github.com/Plotprojects/plot-phon
  
 Cordova: ```cordova plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
 
-Or add this to your config.xml when you are using PhoneGap Build:
-```<gap:plugin name="com.plotprojects.cordova" source="plugins.cordova.io" />```
 
 The following snippet has to be added to the first page that is loaded to initialize Plot:
 ```
