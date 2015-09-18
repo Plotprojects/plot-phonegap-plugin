@@ -110,6 +110,34 @@ static NSDictionary* launchOptions;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+-(void)loadedNotifications:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        NSMutableArray* result = [NSMutableArray array];
+        NSArray* notifications = [Plot loadedNotifications];
+        
+        for (UILocalNotification* uiNotification in notifications) {
+            [result addObject:[self uiNotificationToDictionary:uiNotification]];
+        }
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+-(void)loadedGeotriggers:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        NSMutableArray* result = [NSMutableArray array];
+        NSArray* notifications = [Plot loadedGeotriggers];
+        
+        for (PlotGeotrigger* geotrigger in notifications) {
+            [result addObject:[self geotriggerToDictionary:geotrigger]];
+        }
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 -(void)getVersion:(CDVInvokedUrlCommand*)command {
     NSString* version = [Plot version];
     
@@ -118,15 +146,10 @@ static NSDictionary* launchOptions;
 }
 
 -(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data {
-    NSDictionary* n = [NSDictionary dictionaryWithObjectsAndKeys:
-                       [notification.userInfo objectForKey:@"identifier"], @"id",
-                       notification.alertBody, @"message",
-                       data, @"data",
-                       nil];
-    
+    NSDictionary* n = [self uiNotificationToDictionary:notification];
     
     [self.commandDelegate evalJs:
-     [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runNotificationHandler(%@)", [n JSONString]]];
+     [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runNotificationHandler(%@)", [self toJson:n]]];
 }
 
 -(void)defaultNotificationHandler:(CDVInvokedUrlCommand*)command {
@@ -135,6 +158,62 @@ static NSDictionary* launchOptions;
     
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:data]];
+}
+
+-(NSDictionary*)uiNotificationToDictionary:(UILocalNotification*)uiNotification {
+    NSMutableDictionary* result = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   uiNotification.alertBody, @"message",
+                                   [uiNotification.userInfo objectForKey:@"identifier"], @"id",
+                                   [uiNotification.userInfo objectForKey:@"action"], @"data",
+                                   [uiNotification.userInfo objectForKey:@"trigger"], @"trigger",
+                                   [uiNotification.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
+                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [uiNotification.userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
+                                   [uiNotification.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
+                                   [uiNotification.userInfo objectForKey:@"regionType"], @"regionType",
+                                   [uiNotification.userInfo objectForKey:@"matchRange"], @"matchRange",
+                                   nil];
+    
+    if ([uiNotification.userInfo objectForKey:@"matchIdentifier"]) {
+        [result setObject:[uiNotification.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
+    }
+    
+    return result;
+}
+
+-(NSDictionary*)geotriggerToDictionary:(PlotGeotrigger*)geotrigger {
+    NSMutableDictionary* result = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   [geotrigger.userInfo objectForKey:@"message"], @"name",
+                                   [geotrigger.userInfo objectForKey:@"identifier"], @"id",
+                                   [geotrigger.userInfo objectForKey:@"action"], @"data",
+                                   [geotrigger.userInfo objectForKey:@"trigger"], @"trigger",
+                                   [geotrigger.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
+                                   [geotrigger.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [geotrigger.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
+                                   [geotrigger.userInfo objectForKey:@"regionType"], @"regionType",
+                                   [geotrigger.userInfo objectForKey:@"matchRange"], @"matchRange",
+                                   nil];
+    
+    if ([geotrigger.userInfo objectForKey:@"matchIdentifier"]) {
+        [result setObject:[geotrigger.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
+    }
+    
+    return result;
+}
+
+- (NSString*)toJson:(id)jsonObj
+{
+    NSError* error = nil;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonObj
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    
+    if (error != nil) {
+        NSLog(@"NSDictionary JSONString error: %@", [error localizedDescription]);
+        return nil;
+    } else {
+        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
 }
 
 -(void)plotFilterNotifications:(PlotFilterNotifications*)_filterNotifications {
@@ -148,16 +227,11 @@ static NSDictionary* launchOptions;
     NSMutableArray* notifications = [NSMutableArray arrayWithCapacity:filterNotifications.uiNotifications.count];
     
     for (UILocalNotification* uiNotification in filterNotifications.uiNotifications) {
-        NSDictionary* notification = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      uiNotification.alertBody, @"message",
-                                      [uiNotification.userInfo objectForKey:@"identifier"], @"id",
-                                      [uiNotification.userInfo objectForKey:@"action"], @"data",
-                                      nil];
-        [notifications addObject: notification];
+        [notifications addObject:[self uiNotificationToDictionary:uiNotification]];
     }
     
     [self.commandDelegate evalJs:
-     [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runFilterCallback(%@)", [notifications JSONString]]
+     [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runFilterCallback(%@)", [self toJson:notifications]]
      ];
     
 }
@@ -193,6 +267,60 @@ static NSDictionary* launchOptions;
 
 -(void)plotFilterNotificationsTimeout {
     filterNotifications = nil;
+}
+
+-(void)setStringSegmentationProperty:(CDVInvokedUrlCommand*)command {
+    NSString* property = [command.arguments objectAtIndex:0];
+    NSString* value = [command.arguments objectAtIndex:1];
+    
+    [Plot setStringSegmentationProperty:value forKey:property];
+        
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(void)setBooleanSegmentationProperty:(CDVInvokedUrlCommand*)command {
+    NSString* property = [command.arguments objectAtIndex:0];
+    NSNumber* value = [command.arguments objectAtIndex:1];
+    
+    [Plot setBooleanSegmentationProperty:value.boolValue forKey:property];
+        
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(void)setIntegerSegmentationProperty:(CDVInvokedUrlCommand*)command {
+    NSString* property = [command.arguments objectAtIndex:0];
+    NSNumber* value = [command.arguments objectAtIndex:1];
+    
+    [Plot setIntegerSegmentationProperty:value.longLongValue forKey:property];
+        
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(void)setDoubleSegmentationProperty:(CDVInvokedUrlCommand*)command {
+    NSString* property = [command.arguments objectAtIndex:0];
+    NSNumber* value = [command.arguments objectAtIndex:1];
+    
+    [Plot setDoubleSegmentationProperty:value.doubleValue forKey:property];
+        
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(void)setDateSegmentationProperty:(CDVInvokedUrlCommand*)command {
+    NSString* property = [command.arguments objectAtIndex:0];
+    NSString* value = [NSString stringWithFormat:@"%@", [command.arguments objectAtIndex:1]];
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZZZZZ"];
+
+    NSDate *date = [dateFormat dateFromString:value];
+    [Plot setDateSegmentationProperty:date forKey:property];
+        
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 //The data for the debug log on iOS is only collected when the DEBUG preprocessor macro is set.

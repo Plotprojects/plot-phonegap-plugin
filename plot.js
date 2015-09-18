@@ -78,7 +78,28 @@ cordova.define("cordova/plugin/plot", function(require, exports, module) {
 	plot.getVersion = function(successCallback, failureCallback) {
 		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "getVersion", []);
 	};
-	
+	plot.loadedNotifications = function(successCallback, failureCallback) {
+		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "loadedNotifications", []);
+	};
+	plot.loadedGeotriggers = function(successCallback, failureCallback) {
+		 cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "loadedGeotriggers", []);
+	};
+	plot.setStringSegmentationProperty = function(property, value, successCallback, failureCallback) {
+         cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setStringSegmentationProperty", [property, value]);
+    };
+    plot.setBooleanSegmentationProperty = function(property, value, successCallback, failureCallback) {
+         cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setBooleanSegmentationProperty", [property, value]);
+    };
+    plot.setIntegerSegmentationProperty = function(property, value, successCallback, failureCallback) {
+         cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setIntegerSegmentationProperty", [property, value]);
+    };
+    plot.setDoubleSegmentationProperty = function(property, value, successCallback, failureCallback) {
+         cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setDoubleSegmentationProperty", [property, value]);
+    };
+    plot.setDateSegmentationProperty = function(property, value, successCallback, failureCallback) {
+         cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "setDateSegmentationProperty", [property, value]);
+    };
+
 	//The data for the debug log on iOS is only collected when the DEBUG preprocessor macro is set.
 	plot.mailDebugLog = function(successCallback, failureCallback) {
 		cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "mailDebugLog", [])

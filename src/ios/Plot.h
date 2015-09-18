@@ -16,7 +16,7 @@
 
 @class UIViewController;
 
-/**
+/** 
  * \memberof Plot
  * Key for userInfo properties in UILocalNotifications created by Plot.
  */
@@ -30,13 +30,13 @@ extern NSString* const PlotNotificationMessage;
 
 /**
  * \memberof Plot
- * Key for userInfo properties in UILocalNotifications created by Plot.
+ * Key for userInfo properties in UILocalNotifications created by Plot. Synonym for PlotNotificationDataKey.
  */
 extern NSString* const PlotNotificationActionKey;
 
 /**
  * \memberof Plot
- * The field of the userinfo in the local notification that contains the data for the action to be performed.
+ * The field of the userinfo in the local notification that contains the data for the action to be performed. This data is set using the API or through the dashboard. When no notification handler is defined, the data is treated as URI where an empty string will just open the app. You can change this behaviour with the Notification Handler. If the notification is set to have a landing page in-app, it will bypass the handler and/or notification filter.
  */
 extern NSString* const PlotNotificationDataKey; //synonym for PlotNotificationActionKey
 
@@ -57,6 +57,12 @@ extern NSString* const PlotNotificationIsBeacon;
  * Notification trigger identifier, used in user info.
  */
 extern NSString* const PlotNotificationTrigger;
+
+/**
+ * \memberof Plot
+ * Type of the region. Either geofence or beacon.
+ */
+extern NSString* const PlotNotificationRegionType;
 
 /**
  * \memberof Plot
@@ -90,6 +96,18 @@ extern NSString* const PlotNotificationTriggerExit;
 
 /**
  * \memberof Plot
+ * Constant for PlotNotificationRegionType, used on geofence regions.
+ */
+extern NSString* const PlotNotificationRegionTypeGeofence;
+
+/**
+ * \memberof Plot
+ * Constant for PlotNotificationRegionType, used on beacon regions.
+ */
+extern NSString* const PlotNotificationRegionTypeBeacon;
+
+/**
+ * \memberof Plot
  * Key for userInfo properties for geotriggers in UILocalNotifications created by Plot.
  */
 extern NSString* const PlotGeotriggerIdentifier; //synonym for PlotNotificationIdentifier
@@ -102,7 +120,7 @@ extern NSString* const PlotGeotriggerName; //synonym for PlotNotificationMessage
 
 /**
  * \memberof Plot
- * The field of the userinfo in the geotrigger that contains the data for the action to be performed.
+ * The field of the userinfo in the geotrigger that contains the data for the action to be performed. This data is set using the API or through the dashboard. You can use this data from the geotrigger in the geotrigger handler.
  */
 extern NSString* const PlotGeotriggerDataKey; //synonym for PlotNotificationActionKey
 
@@ -117,6 +135,12 @@ extern NSString* const PlotGeotriggerIsBeacon; //synonym for PlotNotificationIsB
  * Geotrigger trigger identifier, used in user info. Same as NotificationTrigger but without the possibility of being dwelling.
  */
 extern NSString* const PlotGeotriggerTrigger; //synonym for PlotNotificationTrigger
+
+/**
+ * \memberof Plot
+ * Type of the region. Either geofence or beacon.
+ */
+extern NSString* const PlotGeotriggerRegionType;
 
 /**
  * \memberof Plot
@@ -141,6 +165,18 @@ extern NSString* const PlotGeotriggerTriggerEnter; //synonym for PlotNotificatio
  * Constant for PlotGeotriggerTrigger, used on exit trigger event.
  */
 extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotificationTriggerExit
+
+/**
+ * \memberof Plot
+ * Constant for PloGeotriggerRegionType, used on geofence regions.
+ */
+extern NSString* const PlotGeotriggerRegionTypeGeofence;
+
+/**
+ * \memberof Plot
+ * Constant for PloGeotriggerRegionType, used on beacon regions.
+ */
+extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 
 @protocol PlotDelegate;
@@ -210,13 +246,13 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
 @protocol PlotDelegate <NSObject>
 
 @optional
-/** Implement this method if you don’t want a browser to be opened when a notification is received, but instead you want to provide a custom handler.
+/** Implement this method if you don’t want to treat the data field as an URI and open that URI when a notification is received, but instead you want to provide a custom handler. Keep in mind that notifications set to be an in-app landing page will bypass this handler.
  * @param notification The received local notification.
  * @param data The custom handler.
  */
 -(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data;
 
-/** Implement this method if you want to prevent notifications from being shown or modify notifications before they are shown. Select which notifications have to be shown and call [filterNotifications showNotifications:notifications]. Please note that notifications that have been filtered this way can be triggered again later.
+/** Implement this method if you want to prevent notifications from being shown or modify notifications before they are shown. Select which notifications have to be shown and call [filterNotifications showNotifications:notifications]. Please note that notifications that have been filtered this way can be triggered again later and that in-app landing pages bypass this filter.
  * @param filterNotifications
  */
 @optional
@@ -250,6 +286,10 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
  */
 @property (assign, nonatomic) BOOL enableOnFirstRun;
 
+/** Maximum number of geofence that will be monitored at once, Plot will rotate these monitored regions depending on your location. Default and maximum value are 20.
+ */
+@property (assign, nonatomic) int maxRegionsMonitored;
+
 /**
  * \deprecated
  * No longer used. Default is YES.
@@ -265,8 +305,8 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
 @end
 
 /**
- * The main methods to control the beheavior of Plot.
- */
+  * The main methods to control the beheavior of Plot.
+  */
 @interface PlotBase : NSObject
 
 /**
@@ -279,7 +319,7 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
 
 /**
  * \deprecated
- * Before you can make use of the other functionality within Plot, you have to call an initialization method (initializeWithConfiguration:launchOptions: is preferred).
+ * Before you can make use of the other functionality within Plot, you have to call an initialization method (initializeWithLaunchOptions:delegate: is preferred).
  * Normally you want to call this method inside -(BOOL)application:didFinishLaunchingWithOptions:.
  * When the app is launched because the user tapped on a notification, then that notification will be opened.
  * @param key Public key from plot projects used to identify your app.
@@ -298,8 +338,8 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
 +(void)initializeWithConfiguration:(PlotConfiguration*)configuration launchOptions:(NSDictionary *)launchOptions __attribute__((deprecated));
 
 
-/**
- * Before you can make use of the other functionality within Plot, you have to call an initialization method (this one is preferred). It will read the configuration from the config file. Normally you want to call this method inside -(BOOL)application:didFinishLaunchingWithOptions:.
+/** 
+ * Before you can make use of the other functionality within Plot, you have to call an initialization method (this one is preferred). It will read the configuration from the config file (plotconfig.json), please make sure this file is defined. Normally you want to call this method inside -(BOOL)application:didFinishLaunchingWithOptions:.
  * When the app is launched because the user tapped on a notification, then that notification will be opened.
  * @param launchOptions Specific options used on launch, can be used to pass options as user.
  * @param delegate Plot delegate used.
@@ -395,6 +435,16 @@ extern NSString* const PlotGeotriggerTriggerExit; //synonym for PlotNotification
  * @param advertisingTrackingEnabled
  */
 +(void)setAdvertisingIdentifier:(NSUUID*)advertisingIdentifier advertisingTrackingEnabled:(BOOL)advertisingTrackingEnabled;
+
+/**
+ * Returns a list of all loaded notifications. These include the notifications that are already sent. This call uses blocking I/O, therefore shouldn't be run on the main thread.
+ */
++(NSArray*)loadedNotifications;
+
+/**
+ * Returns a list of all loaded geotriggers. This call uses blocking I/O, therefore shouldn't be run on the main thread.
+ */
++(NSArray*)loadedGeotriggers;
 
 @end
 

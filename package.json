@@ -1,0 +1,31 @@
+{
+    "version": "1.11.0",
+    "name": "com.plotprojects.cordova",
+    "cordova_name": "Plot",
+    "author": "Plot Projects",
+    "description": "Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.",
+    "license": "Apache 2.0 License",
+    "keywords": [
+    		"ecosystem:cordova",
+    		"cordova-android",
+        "cordova-ios",
+        "plot",
+        "plotprojects",
+        "location",
+        "notification"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": [
+        {
+            "name": "cordova",
+            "version": ">=3.0.0"
+        }
+    ],
+    "repository" : {
+    	"type" : "git", 
+    	"url" : "https://github.com/Plotprojects/plot-phonegap-plugin.git"
+    }
+}
