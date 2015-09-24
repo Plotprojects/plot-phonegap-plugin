@@ -10,12 +10,9 @@ This plugins requires PhoneGap 3.0.0 or higher.
 This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
 ### Phonegap Build ###
-Due to an issue with Phonegap Build, only version 1.9.0 is supported on Phonegap Build.
+Add the following line to `config.xml` to add our plugin:
 
-
-Add the following line to `www/config.xml` to add our plugin:
-
-```<gap:plugin name="com.plotprojects.cordova" source="plugins.cordova.io" version="1.9.0" />```
+```<gap:plugin name="cordova-plotprojects" source="npm" version="1.11.0" />```
 
 And you can initialise Plot using the following snippet:
 ```
@@ -34,9 +31,9 @@ File based configuration doesn't work yet in this version.
 
 You can add the plugin to an existing project by executing the following command:
 
-Phonegap: ```phonegap local plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
+Phonegap: ```phonegap plugin add cordova-plotprojects```
  
-Cordova: ```cordova plugin add https://github.com/Plotprojects/plot-phonegap-plugin/```
+Cordova: ```cordova plugin add cordova-plotprojects```
 
 
 The following snippet has to be added to the first page that is loaded to initialize Plot:
@@ -50,7 +47,7 @@ function deviceReady() {
 </script>
 ```
 
-Before you can use this plugin you have to put `plotconfig.json` in the `www/` folder. You can obtain your `plotconfig.json` with your own public token for free at: http://www.plotprojects.com/getourplugin/ 
+Before you can use this plugin you have to put `plotconfig.json` in the `www/` folder. You can obtain your `plotconfig.json` with your own public token for free at: [http://www.plotprojects.com/getourplugin/](http://www.plotprojects.com/getourplugin/)
 
 ### Function reference ###
 
@@ -139,13 +136,13 @@ plot.loadedGeotriggers(function(geotriggers) {
 ```
 
 ### More information ###
-Website: http://www.plotprojects.com/
+Website: [http://www.plotprojects.com/](http://www.plotprojects.com/)
 
-Documentation: http://www.plotprojects.com/support
+Documentation: [http://www.plotprojects.com/support](http://www.plotprojects.com/support)
 
-Android plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/
+Android plugin: [http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/](http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/)
 
-IOS plugin: http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-ios/
+IOS plugin: [http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-ios/](http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-ios/)
 
 ### License ###
 The source files included in the repository are released under the Apache License, Version 2.0.
