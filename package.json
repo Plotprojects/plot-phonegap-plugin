@@ -1,5 +1,5 @@
 {
-    "version": "1.11.0",
+    "version": "1.11.1",
     "name": "cordova-plotprojects",
     "cordova_name": "Plot",
     "author": "Plot Projects <info@plotprojects.com> (http://www.plotprojects.com)",
@@ -19,7 +19,9 @@
         "plot",
         "plotprojects",
         "location",
-        "notification"
+        "notification",
+        "geofencing",
+        "geofence"
     ],
     "platforms": [
         "android",
