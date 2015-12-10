@@ -2,7 +2,7 @@
 //  Plot.h
 //  Plot
 //
-//  Copyright (c) 2014 Floating Market B.V. All rights reserved.
+//  Copyright (c) 2015 Floating Market B.V. All rights reserved.
 //
 
 /*! \mainpage IOS Plugin Documentation
@@ -78,6 +78,12 @@ extern NSString* const PlotNotificationGeofenceLongitude;
 
 /**
  * \memberof Plot
+ * Geofence match range identifier, used in user info.
+ */
+extern NSString* const PlotNotificationMatchRange;
+
+/**
+ * \memberof Plot
  * Dwelling time identifier, used in user info.
  */
 extern NSString* const PlotNotificationDwellingMinutes;
@@ -144,15 +150,21 @@ extern NSString* const PlotGeotriggerRegionType;
 
 /**
  * \memberof Plot
- * Geofence latitude identifier, used in user info.
+ * Geotrigger latitude identifier, used in user info.
  */
 extern NSString* const PlotGeotriggerGeofenceLatitude; //synonym for PlotNotificationGeofenceLatitude
 
 /**
  * \memberof Plot
- * Geofence longitude identifier, used in user info.
+ * Geotrigger longitude identifier, used in user info.
  */
 extern NSString* const PlotGeotriggerGeofenceLongitude; //synonym for PlotNotificationGeofenceLongitude
+
+/**
+ * \memberof Plot
+ * Geotrigger match range identifier, used in user info.
+ */
+extern NSString* const PlotGeotriggerMatchRange;
 
 /**
  * \memberof Plot
@@ -396,6 +408,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /**
  * Sets a property of the user for segmentation. Set value to nil to clear the property.
+ * A property can only have a single value. When setting a value for an existing property the previous value gets overwritten.
  * @param value
  * @param propertyKey
  */
@@ -403,6 +416,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /**
  * Sets a property of the user for segmentation. Set value to nil to clear the property.
+ * A property can only have a single value. When setting a value for an existing property the previous value gets overwritten.
  * @param value
  * @param propertyKey
  */
@@ -410,6 +424,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /**
  * Sets a property of the user for segmentation. Set value to nil to clear the property.
+ * A property can only have a single value. When setting a value for an existing property the previous value gets overwritten.
  * @param value
  * @param propertyKey
  */
@@ -417,6 +432,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /**
  * Sets a property of the user for segmentation. Set value to nil to clear the property.
+ * A property can only have a single value. When setting a value for an existing property the previous value gets overwritten.
  * @param value
  * @param propertyKey
  */
@@ -424,6 +440,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /**
  * Sets a property of the user for segmentation. Set value to nil to clear the property.
+ * A property can only have a single value. When setting a value for an existing property the previous value gets overwritten.
  * @param value
  * @param propertyKey
  */
