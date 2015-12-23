@@ -2,7 +2,7 @@ Plot PhoneGap Plugin
 ====================
 Install Plot into your PhoneGap/Cordova app quickly
 
-Get location based notifications in your PhoneGap app! Now also experimental support for iBeacon in the iOS version.
+Get location based notifications in your PhoneGap app! Now also supports iBeacons for iOS out of the box and for Android after also integrating our Android iBeacon plugin found here: [https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons](https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons)
 
 ### Supported platforms ###
 
@@ -10,22 +10,10 @@ This plugins requires PhoneGap 3.0.0 or higher.
 This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
 ### Phonegap Build ###
-Add the following line to `config.xml` to add our plugin:
 
-```<gap:plugin name="cordova-plotprojects" source="npm" version="1.11.0" />```
+You have to add the following line to `config.xml` to add our plugin:
 
-And you can initialise Plot using the following snippet:
-```
-<script type="text/javascript">
-document.addEventListener("deviceready", deviceReady, true);
-function deviceReady() {
-  var plot = cordova.require("cordova/plugin/plot");
-  plot.init();
-}
-</script>
-```
-
-File based configuration doesn't work yet in this version.
+```<gap:plugin name="cordova-plotprojects" source="npm" version="1.12.0" />```
 
 ### Installation other environments ###
 
@@ -35,6 +23,7 @@ Phonegap: ```phonegap plugin add cordova-plotprojects```
  
 Cordova: ```cordova plugin add cordova-plotprojects```
 
+### Integration and configuration ###
 
 The following snippet has to be added to the first page that is loaded to initialize Plot:
 ```
@@ -48,6 +37,21 @@ function deviceReady() {
 ```
 
 Before you can use this plugin you have to put `plotconfig.json` in the `www/` folder. You can obtain your `plotconfig.json` with your own public token for free at: [http://www.plotprojects.com/getourplugin/](http://www.plotprojects.com/getourplugin/)
+
+Additional settings are possible using the configuration file, an example is shown below. The publicToken and enableOnFirstRun fields are required, the notificationSmallIcon, notificationAccentColor and askPermissionAgainAfterDays options are Android only, the maxRegionsMonitored is an iOS only setting.
+
+Information about these settings can be found in our extensive documentation, in chapter 1.4: [http://www.plotprojects.com/documentation#ConfigurationFile](http://www.plotprojects.com/documentation#ConfigurationFile)
+
+```
+{
+  "publicToken": "REPLACE_ME",
+  "enableOnFirstRun": true,
+  "notificationSmallIcon": "ic_mood_white_24dp",
+  "notificationAccentColor": "#01579B",
+  "askPermissionAgainAfterDays": 3,
+  "maxRegionsMonitored": 20
+}
+```
 
 ### Function reference ###
 
@@ -74,6 +78,10 @@ Returns the current version of the Plot plugin.
 _plot.mailDebugLog()_
 
 Sends the collected debug log via mail. It will open your mail application to send the mail.
+
+### Function reference - Segmentation ###
+
+More information about this feature can be found on our documentation page: [http://www.plotprojects.com/documentation#phonegap_segmentation](http://www.plotprojects.com/documentation#phonegap_segmentation)
 
 _plot.setStringSegmentationProperty(property, value)_
 
@@ -138,7 +146,7 @@ plot.loadedGeotriggers(function(geotriggers) {
 ### More information ###
 Website: [http://www.plotprojects.com/](http://www.plotprojects.com/)
 
-Documentation: [http://www.plotprojects.com/support](http://www.plotprojects.com/support)
+Documentation: [http://www.plotprojects.com/documentation](http://www.plotprojects.com/documentation)
 
 Android plugin: [http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/](http://www.plotprojects.com/developing-a-cordova-phonegap-plugin-for-android/)
 
