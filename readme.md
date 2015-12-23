@@ -25,18 +25,7 @@ Cordova: ```cordova plugin add cordova-plotprojects```
 
 ### Integration and configuration ###
 
-The following snippet has to be added to the first page that is loaded to initialize Plot:
-```
-<script type="text/javascript">
-document.addEventListener("deviceready", deviceReady, true);
-function deviceReady() {
-  var plot = cordova.require("cordova/plugin/plot");
-  plot.init({});
-}
-</script>
-```
-
-Before you can use this plugin you have to put `plotconfig.json` in the `www/` folder. You can obtain your `plotconfig.json` with your own public token for free at: [http://www.plotprojects.com/getourplugin/](http://www.plotprojects.com/getourplugin/)
+You can find the integration guide at our website: [http://www.plotprojects.com/phonegap-integration/](http://www.plotprojects.com/phonegap-integration/)
 
 Additional settings are possible using the configuration file, an example is shown below. The publicToken and enableOnFirstRun fields are required, the notificationSmallIcon, notificationAccentColor and askPermissionAgainAfterDays options are Android only, the maxRegionsMonitored is an iOS only setting.
 
