@@ -11,11 +11,11 @@ This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
 ### Phonegap Build ###
 
-You have to add the following line to `config.xml` to add our plugin:
+Add the following line to `config.xml` to add our plugin:
 
 ```<gap:plugin name="cordova-plotprojects" source="npm" version="1.12.0" />```
 
-### Installation other environments ###
+### Installation for Other Builds###
 
 You can add the plugin to an existing project by executing the following command:
 
@@ -23,7 +23,7 @@ Phonegap: ```phonegap plugin add cordova-plotprojects```
  
 Cordova: ```cordova plugin add cordova-plotprojects```
 
-### Integration and configuration ###
+### Integration and Configuration ###
 
 You can find the integration guide at our website: [http://www.plotprojects.com/phonegap-integration/](http://www.plotprojects.com/phonegap-integration/)
 
@@ -43,6 +43,10 @@ Information about these settings can be found in our extensive documentation, in
 ```
 
 ### Function reference ###
+
+_plot.init()_
+
+Initializes Plot.
 
 _plot.enable()_
 
