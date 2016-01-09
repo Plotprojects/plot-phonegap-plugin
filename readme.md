@@ -4,7 +4,7 @@ Install Plot into your PhoneGap/Cordova app quickly
 
 Get location based notifications in your PhoneGap app! Now also supports iBeacons for iOS out of the box and for Android after also integrating our Android iBeacon plugin found here: [https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons](https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons)
 
-### Supported platforms ###
+### Supported Platforms ###
 
 This plugins requires PhoneGap 3.0.0 or higher.
 This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
@@ -42,7 +42,7 @@ Information about these settings can be found in our extensive documentation, in
 }
 ```
 
-### Function reference ###
+### Function Reference ###
 
 _plot.init()_
 
@@ -58,7 +58,7 @@ Disables Plot.
 
 _plot.isEnabled()_
 
-Returns whether plot is enabled (read-only).
+Returns whether Plot is enabled (read-only).
 
 _plot.setCooldownPeriod(cooldownSeconds)_
 
@@ -72,7 +72,7 @@ _plot.mailDebugLog()_
 
 Sends the collected debug log via mail. It will open your mail application to send the mail.
 
-### Function reference - Segmentation ###
+### Function Reference - Segmentation ###
 
 More information about this feature can be found on our documentation page: [http://www.plotprojects.com/documentation#phonegap_segmentation](http://www.plotprojects.com/documentation#phonegap_segmentation)
 
@@ -122,7 +122,7 @@ plot.notificationHandler = function(notification, data) {
 }
 ```
 
-### Retrieving loaded notifications and geotriggers ###
+### Retrieving Loaded Notifications and Geotriggers ###
 
 You can retrieve the loaded notifications and geotriggers using the `loadedNotifications(callback)` and the `loadedGeotriggers(callback)` method.
 
@@ -136,7 +136,7 @@ plot.loadedGeotriggers(function(geotriggers) {
 });
 ```
 
-### More information ###
+### More Information ###
 Website: [http://www.plotprojects.com/](http://www.plotprojects.com/)
 
 Documentation: [http://www.plotprojects.com/documentation](http://www.plotprojects.com/documentation)
