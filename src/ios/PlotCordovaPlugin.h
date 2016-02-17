@@ -1,5 +1,5 @@
 //
-//  PlotPlugin.h
+//  PlotCordovaPlugin.h
 //
 //
 
@@ -12,8 +12,5 @@
     PlotFilterNotifications* filterNotifications;
     NSTimer* filterNotificationsTimeoutTimer;
 }
-
-
-
 
 @end

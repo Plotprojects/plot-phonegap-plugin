@@ -1,5 +1,5 @@
 //
-//  PlotPlugin.m
+//  PlotCordovaPlugin.m
 //  http://www.plotprojects.com/
 //
 
@@ -138,6 +138,52 @@ static NSDictionary* launchOptions;
     }];
 }
 
+-(void)sentNotifications:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        NSMutableArray* result = [NSMutableArray array];
+        NSArray* sentNotifications = [Plot sentNotifications];
+        
+        for (PlotSentNotification* sentNotification in sentNotifications) {
+            [result addObject:[self sentNotificationToDictionary:sentNotification]];
+        }
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+-(void)sentGeotriggers:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        NSMutableArray* result = [NSMutableArray array];
+        NSArray* sentGeotriggers = [Plot sentGeotriggers];
+        
+        for (PlotSentGeotrigger* sentGeotrigger in sentGeotriggers) {
+            [result addObject:[self sentGeotriggerToDictionary:sentGeotrigger]];
+        }
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+-(void)clearSentNotifications:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        [Plot clearSentNotifications];
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+-(void)clearSentGeotriggers:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        [Plot clearSentGeotriggers];
+        
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 -(void)getVersion:(CDVInvokedUrlCommand*)command {
     NSString* version = [Plot version];
     
@@ -153,9 +199,8 @@ static NSDictionary* launchOptions;
 }
 
 -(void)defaultNotificationHandler:(CDVInvokedUrlCommand*)command {
-    //NSDictionary* notification = [command.arguments objectAtIndex:0];
-    NSString* data = [command.arguments objectAtIndex:1];
-    
+    //NSDictionary* notification = [command.arguments objectAtIndex:0]
+    NSString* data = [command.arguments objectAtIndex:1];    
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:data]];
 }
@@ -167,7 +212,7 @@ static NSDictionary* launchOptions;
                                    [uiNotification.userInfo objectForKey:@"action"], @"data",
                                    [uiNotification.userInfo objectForKey:@"trigger"], @"trigger",
                                    [uiNotification.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
-                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",                            
                                    [uiNotification.userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
                                    [uiNotification.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
                                    [uiNotification.userInfo objectForKey:@"regionType"], @"regionType",
@@ -177,7 +222,7 @@ static NSDictionary* launchOptions;
     if ([uiNotification.userInfo objectForKey:@"matchIdentifier"]) {
         [result setObject:[uiNotification.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
     }
-    
+
     return result;
 }
 
@@ -189,13 +234,69 @@ static NSDictionary* launchOptions;
                                    [geotrigger.userInfo objectForKey:@"trigger"], @"trigger",
                                    [geotrigger.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
                                    [geotrigger.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
-                                   [geotrigger.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
                                    [geotrigger.userInfo objectForKey:@"regionType"], @"regionType",
                                    [geotrigger.userInfo objectForKey:@"matchRange"], @"matchRange",
                                    nil];
     
     if ([geotrigger.userInfo objectForKey:@"matchIdentifier"]) {
         [result setObject:[geotrigger.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
+    }
+    
+    return result;
+}
+
+-(NSDictionary*)sentNotificationToDictionary:(PlotSentNotification*)sentNotification {
+    NSDictionary* userInfo = sentNotification.userInfo;
+    
+    NSMutableDictionary* result = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   [userInfo objectForKey:@"message"], @"message",
+                                   [userInfo objectForKey:@"identifier"], @"id",
+                                   [userInfo objectForKey:@"matchIdentifier"], @"matchIdentifier",
+                                   [userInfo objectForKey:@"action"], @"data",
+                                   [userInfo objectForKey:@"trigger"], @"trigger",
+                                   [userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
+                                   [userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
+                                   [userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
+                                   [userInfo objectForKey:@"regionType"], @"regionType",
+                                   [userInfo objectForKey:@"matchRange"], @"matchRange",
+                                   nil];    
+
+    [result setObject:@([sentNotification.dateSent timeIntervalSince1970]) forKey:@"dateSent"];
+    if (sentNotification.dateOpened != nil) {
+        [result setObject:@([sentNotification.dateOpened timeIntervalSince1970]) forKey:@"dateOpened"];
+        [result setObject:@(YES) forKey:@"isOpened"];
+    } else {
+        [result setObject:@(-1) forKey:@"dateOpened"];
+        [result setObject:@(NO) forKey:@"isOpened"];
+    }
+    
+    return result;
+}
+
+-(NSDictionary*)sentGeotriggerToDictionary:(PlotSentGeotrigger*)sentGeotrigger {
+    NSDictionary* userInfo = sentGeotrigger.userInfo;
+    
+    NSMutableDictionary* result = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   [userInfo objectForKey:@"message"], @"name",
+                                   [userInfo objectForKey:@"identifier"], @"id",
+                                   [userInfo objectForKey:@"matchIdentifier"], @"matchIdentifier",
+                                   [userInfo objectForKey:@"action"], @"data",
+                                   [userInfo objectForKey:@"trigger"], @"trigger",
+                                   [userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
+                                   [userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
+                                   [userInfo objectForKey:@"regionType"], @"regionType",
+                                   [userInfo objectForKey:@"matchRange"], @"matchRange",
+                                   nil];
+
+    [result setObject:@([sentGeotrigger.dateSent timeIntervalSince1970]) forKey:@"dateSent"];
+    if (sentGeotrigger.dateHandled != nil) {
+        [result setObject:@([sentGeotrigger.dateHandled timeIntervalSince1970]) forKey:@"dateHandled"];
+        [result setObject:@(YES) forKey:@"isHandled"];
+    } else {
+        [result setObject:@(-1) forKey:@"dateHandled"];
+        [result setObject:@(NO) forKey:@"isHandled"];
     }
     
     return result;
@@ -274,7 +375,7 @@ static NSDictionary* launchOptions;
     NSString* value = [command.arguments objectAtIndex:1];
     
     [Plot setStringSegmentationProperty:value forKey:property];
-        
+    
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -284,7 +385,7 @@ static NSDictionary* launchOptions;
     NSNumber* value = [command.arguments objectAtIndex:1];
     
     [Plot setBooleanSegmentationProperty:value.boolValue forKey:property];
-        
+    
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -294,7 +395,7 @@ static NSDictionary* launchOptions;
     NSNumber* value = [command.arguments objectAtIndex:1];
     
     [Plot setIntegerSegmentationProperty:value.longLongValue forKey:property];
-        
+    
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -304,7 +405,7 @@ static NSDictionary* launchOptions;
     NSNumber* value = [command.arguments objectAtIndex:1];
     
     [Plot setDoubleSegmentationProperty:value.doubleValue forKey:property];
-        
+    
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -315,10 +416,10 @@ static NSDictionary* launchOptions;
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZZZZZ"];
-
+    
     NSDate *date = [dateFormat dateFromString:value];
     [Plot setDateSegmentationProperty:date forKey:property];
-        
+    
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
