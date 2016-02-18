@@ -1,1 +1,5 @@
 .DS_Store
+tmp/
+.gradle/
+plotprojects-example/platforms/*
+plotprojects-example/plugins/*
