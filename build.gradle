@@ -2,8 +2,8 @@ def iosSource = 'src/ios'
 def androidSource = 'src/android'
 
 def pluginVersion = System.getenv('VersionNumber')
-def iosVersionNumber = System.getenv('iOSVersionNumber').replace('.', '_')
-def androidVersionNumber = System.getenv('AndroidVersionNumber').replace('.', '_')
+def iosVersionNumber = System.getenv('iOSVersionNumber').replace('.', '_').replace('-', '_')
+def androidVersionNumber = System.getenv('AndroidVersionNumber').replace('.', '_').replace('-', '_')
 
 def iosZip = file('tmp/ios.zip')
 def androidZip = file('tmp/android.zip')
