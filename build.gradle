@@ -161,7 +161,7 @@ task createGitCommit << {
 	  commandLine 'git', 'commit', '-m', "Release of ${pluginVersion}"
 	}
 	exec {
-		commandLine 'git', 'push', gitRepo, 'master:publishtest'
+		commandLine 'git', 'push', gitRepo, 'master'
 	}
 }
 
