@@ -13,7 +13,7 @@ This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
 
 You have to add the following line to `config.xml` to add our plugin:
 
-```<gap:plugin name="cordova-plotprojects" source="npm" version="1.13.0" />```
+```<gap:plugin name="cordova-plotprojects" source="npm" version="1.x" />```
 
 ### Installation other environments ###
 
