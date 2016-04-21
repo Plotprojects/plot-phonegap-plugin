@@ -1,6 +1,6 @@
 Plot PhoneGap Plugin
 ====================
-Install Plot into your PhoneGap/Cordova app quickly
+Install Plot into your PhoneGap/Cordova/Ionic app quickly
 
 Get location based notifications in your PhoneGap app! Now also supports iBeacons for iOS out of the box and for Android after also integrating our Android iBeacon plugin found here: [https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons](https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons)
 
@@ -21,17 +21,20 @@ You can add the plugin to an existing project by executing the following command
 
 Phonegap: ```phonegap plugin add cordova-plotprojects```
  
-Cordova: ```cordova plugin add cordova-plotprojects```
+Cordova/Ionic: ```cordova plugin add cordova-plotprojects```
 
 ### Integration and configuration ###
 
-You can find the integration guide at our website: [http://www.plotprojects.com/phonegap-integration/](http://www.plotprojects.com/phonegap-integration/)
+You can find the integration guide at our website:
+
+| :book: [Integration Guide](http://www.plotprojects.com/phonegap-integration/) |
+| :---: |
 
 Additional settings are possible using the configuration file, an example is shown below. The publicToken and enableOnFirstRun fields are required, the notificationSmallIcon, notificationAccentColor and askPermissionAgainAfterDays options are Android only, the maxRegionsMonitored is an iOS only setting.
 
 Information about these settings can be found in our extensive documentation, in chapter 1.4: [http://www.plotprojects.com/documentation#ConfigurationFile](http://www.plotprojects.com/documentation#ConfigurationFile)
 
-```
+```javascript
 {
   "publicToken": "REPLACE_ME",
   "enableOnFirstRun": true,
@@ -61,7 +64,7 @@ _plot.isEnabled(resultCallback, failureCallback)_
 Returns whether plot is enabled (read-only).
 
 Example:
-```
+```javascript
 plot.isEnabled(function(enabled) {
 	var plotEnabledState = enabled ? "enabled" : "disabled";
 	console.log("Plot is " + plotEnabledState);
@@ -135,7 +138,7 @@ Clears the list of sent geotriggers.
 ### Notification Filter ###
 
 To intercept notifications before they are shown you can use the filterCallback. This feature is only available on IOS.
-```
+```javascript
 //Optional, by default all notifications are sent:
 //Place this function BEFORE plot.init();
 plot.filterCallback = function(notifications) {
@@ -150,7 +153,7 @@ plot.filterCallback = function(notifications) {
 ### Notification Handler ###
 
 To change the action when a notification has been received you can use the notificationHandler. This feature is available both on IOS and Android.
-```
+```javascript
 //Optional, by default the data is treated as URL and opened in a separate application:
 //Place this function BEFORE plot.init();
 plot.notificationHandler = function(notification, data) {
