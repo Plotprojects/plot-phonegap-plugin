@@ -183,6 +183,7 @@ task publishNpm(type: Exec) {
 }
 
 publishNpm.mustRunAfter updatePluginXml
+publishNpm.mustRunAfter createGitTag
 
 task replaceConfig {
 	description "Replaces the public token for the example app"
@@ -209,12 +210,12 @@ task compileExamples(dependsOn: ['compileAndroidExample', 'compileIosExample']) 
 	group "Release"
 }
 
-task staging(dependsOn: ['clean', 'updatePluginXml', 'createGitTag']) {
+task staging(dependsOn: ['clean', 'updatePluginXml']) {
   description "Releases a new version of the library"
   group "Release"
 }
 
-task release(dependsOn: ['staging', 'publishNpm']) {
+task release(dependsOn: ['staging', 'createGitTag', 'publishNpm']) {
   description "Releases a new version of the library and pushes to NPM"
   group "Release"
 }
