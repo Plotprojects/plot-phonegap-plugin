@@ -237,19 +237,19 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /** All notifications that are within the radius of the geofence. The type of the objects in the array is UILocalNotification*.
  */
-@property (strong, nonatomic, readonly) NSArray* uiNotifications;
+@property (strong, nonatomic, readonly) NSArray<UILocalNotification*>* uiNotifications;
 
-/** Shows the UILocalNotification* in the array in the notification center of the device. When a cooldown period is specified, only the first notification is shown when the cooldown is not in effect.
+/** Shows the UILocalNotification* in the array in the notification center of the device. When a cooldown period is specified, only the first notification is shown when the cooldown is not in effect. Make sure to always call this method at the end of the filtering, even when the array of notifications to show is empty. This way our plugin knows filtering has finished.
  * @param uiNotifications The array of local notifications.
  */
--(void)showNotifications:(NSArray*)uiNotifications;
+-(void)showNotifications:(NSArray<UILocalNotification*>*)uiNotifications;
 
 /**
  * Utility method that helps you test your notification filter. Returns the notifications your filter returns
  * @param notifications notifications to pass to your delegate. The elements must be of type UILocalNotification.
  * @param delegate the delegate to test.
  */
-+(NSArray*)testFilterNotifications:(NSArray*)notifications delegate:(id<PlotDelegate>)delegate;
++(NSArray*)testFilterNotifications:(NSArray<UILocalNotification*>*)notifications delegate:(id<PlotDelegate>)delegate;
 
 @end
 
@@ -273,18 +273,18 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 /** All geotriggers that are within the radius of the geofence. The type of the objects in the array is PlotGeotrigger*.
  */
-@property (strong, nonatomic, readonly) NSArray* geotriggers;
+@property (strong, nonatomic, readonly) NSArray<PlotGeotrigger*> *geotriggers;
 
-/** Call this method after handling the geotriggers in your custom geotriggers handler.
+/** Call this method after handling the geotriggers in your custom geotriggers handler, even when there are no geotriggers to handle, so our plugin detects that handling has finished.
  */
--(void)markGeotriggersHandled:(NSArray*)geotriggers;
+-(void)markGeotriggersHandled:(NSArray<PlotGeotrigger*>*)geotriggers;
 
 /**
  * Utility method that helps you test your geotrigger handler. Returns the geotriggers your handler would return (handled geotriggers).
  * @param geotriggers geotriggers to pass to your delegate. The elements must be of type PlotGeotrigger.
  * @param delegate the delegate to test.
  */
-+(NSArray*)testHandleGeotriggers:(NSArray*)geotriggers delegate:(id<PlotDelegate>)delegate;
++(NSArray*)testHandleGeotriggers:(NSArray<PlotGeotrigger*>*)geotriggers delegate:(id<PlotDelegate>)delegate;
 
 @end
 
@@ -341,13 +341,13 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 -(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data;
 
-/** Implement this method if you want to prevent notifications from being shown or modify notifications before they are shown. Select which notifications have to be shown and call [filterNotifications showNotifications:notifications]. Please note that notifications that have been filtered this way can be triggered again later and that in-app landing pages bypass this filter.
+/** Implement this method if you want to prevent notifications from being shown or modify notifications before they are shown. Select which notifications have to be shown and call [filterNotifications showNotifications:notifications]. Make sure to always call this method, even when the array of notifications is empty. Please note that notifications that have been filtered this way can be triggered again later and that in-app landing pages bypass this filter.
  * @param filterNotifications
  */
 @optional
 -(void)plotFilterNotifications:(PlotFilterNotifications*)filterNotifications;
 
-/** Implement this method if you want to handle geotriggers. If you want geotriggers to use cooldowns etc, call [geotriggerHandler markGeoTriggersHandled:geotriggers]. Please note that geotriggers that have not been passed on this way can be triggered again later eventhough they are not resendable.
+/** Implement this method if you want to handle geotriggers. If you want geotriggers to use cooldowns etc, call [geotriggerHandler markGeoTriggersHandled:geotriggers]. Make sure to always call this method, even when the array of geotriggers is empty. Please note that geotriggers that have not been passed on this way can be triggered again later even though they are not resendable.
  * @param geotriggerHandler
  */
 @optional
@@ -551,25 +551,25 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  * Returns a list of all loaded notifications. These include the notifications that are already sent. Type is an array of UILocalNotification. You can retrieve data from the userInfo dictionary.
  * This call uses blocking I/O, therefore shouldn't be run on the main thread.
  */
-+(NSArray*)loadedNotifications;
++(NSArray<UILocalNotification*>*)loadedNotifications;
 
 /**
  * Returns a list of all loaded geotriggers. Type is an array of PlotGeotrigger. You can retrieve data from the userInfo dictionary.
  * This call uses blocking I/O, therefore shouldn't be run on the main thread.
  */
-+(NSArray*)loadedGeotriggers;
++(NSArray<PlotGeotrigger*>*)loadedGeotriggers;
 
 /**
  * Returns a list of all notifications sent by this library. Up to a 100 notifications will be stored. Type is an array of PlotSentNotification.
  * This call uses blocking I/O, therefore shouldn't be run on the main thread.
  */
-+(NSArray*)sentNotifications;
++(NSArray<PlotSentNotification*>*)sentNotifications;
 
 /**
  * Returns a list of all geotriggers sent by this library. Up to a 100 geotriggers will be stored. Type is an array of PlotSentGeotrigger.
  * This call uses blocking I/O, therefore shouldn't be run on the main thread.
  */
-+(NSArray*)sentGeotriggers;
++(NSArray<PlotSentGeotrigger*>*)sentGeotriggers;
 
 /**
  * Clears the stored list of sent notifications.
@@ -581,12 +581,22 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 +(void)clearSentGeotriggers;
 
+
+/**
+ * Only needed when method swizzling is disabled in the Firebase library and you want to make use of QuickSync. Forward the method with the
+ * same name from the AppDelegate to Plot to ensure correct workings.
+ */
 +(void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken;
 
+/**
+ * Only needed when method swizzling is disabled in the Firebase library and you want to make use of QuickSync. Forward the method with the
+ * same name from the AppDelegate to Plot to ensure correct workings.
+ */
 +(void)didFailToRegisterForRemoteNotificationsWithError:(NSError*)error;
 
-+(void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
-
+/**
+ * Forward this method with the same name from the AppDelegate to Plot when you want to make use of QuickSync.
+ */
 +(void)didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))handler;
 
 @end
