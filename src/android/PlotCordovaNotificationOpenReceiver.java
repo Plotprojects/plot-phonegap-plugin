@@ -1,3 +1,7 @@
+/**
+ * © 2017 Plot Projects
+ * https://www.plotprojects.com
+ */
 package com.plotprojects.cordova;
 
 import android.content.BroadcastReceiver;

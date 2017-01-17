@@ -1,10 +1,22 @@
+/**
+ * © 2017 Plot Projects
+ * https://www.plotprojects.com
+ */
 package com.plotprojects.cordova;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import com.plotprojects.retail.android.*;
+
+import com.plotprojects.retail.android.FilterableNotification;
+import com.plotprojects.retail.android.Geotrigger;
+import com.plotprojects.retail.android.NotificationTrigger;
+import com.plotprojects.retail.android.Plot;
+import com.plotprojects.retail.android.PlotConfiguration;
+import com.plotprojects.retail.android.SentGeotrigger;
+import com.plotprojects.retail.android.SentNotification;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -12,10 +24,10 @@ import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
+
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class PlotCordovaPlugin extends CordovaPlugin {
 
@@ -97,6 +109,21 @@ public class PlotCordovaPlugin extends CordovaPlugin {
                 callbackContext.error("Public token not specified or not specified correctly.");
                 return;
             }
+            
+            PlotRemoteHandler remoteHandler = new PlotRemoteHandler(cordova.getActivity());
+            String remoteNotificationFilter = null;
+            if (jsonConfiguration != null && jsonConfiguration.has("remoteNotificationFilter")) {
+                remoteNotificationFilter = jsonConfiguration.getString("remoteNotificationFilter");
+            }
+
+            String remoteGeotriggerHandler = null;
+            if (jsonConfiguration != null && jsonConfiguration.has("remoteGeotriggerHandler")) {
+                remoteGeotriggerHandler = jsonConfiguration.getString("remoteGeotriggerHandler");
+            }
+
+            remoteHandler.setRemoteNotificationFilter(remoteNotificationFilter);
+            remoteHandler.setRemoteGeotriggerHandler(remoteGeotriggerHandler);
+
             if (publicKey != null) {
                 PlotConfiguration configuration = new PlotConfiguration(publicKey);
                 try {
@@ -358,11 +385,11 @@ public class PlotCordovaPlugin extends CordovaPlugin {
 
         });
     }
-    
+
     private void clearSentNotifications(final CallbackContext callbackContext) {
-    	cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-            	try {
+                try {
                     Plot.clearSentNotifications();
                     callbackContext.success();
                 } catch (Exception e) {
@@ -370,13 +397,13 @@ public class PlotCordovaPlugin extends CordovaPlugin {
                     callbackContext.error(e.getMessage());
                 }
             }
-      });
+        });
     }
-    
+
     private void clearSentGeotriggers(final CallbackContext callbackContext) {
-    	cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-            	try {
+                try {
                     Plot.clearSentGeotriggers();
                     callbackContext.success();
                 } catch (Exception e) {
@@ -384,7 +411,7 @@ public class PlotCordovaPlugin extends CordovaPlugin {
                     callbackContext.error(e.getMessage());
                 }
             }
-      });
+        });
     }
 
 
@@ -408,7 +435,7 @@ public class PlotCordovaPlugin extends CordovaPlugin {
         jsonObject.put("notificationHandlerType", notification.getHandlerType());
         jsonObject.put("matchRange", notification.getMatchRange());
         jsonObject.put("regionType", notification.getRegionType());
-        
+
         return jsonObject;
     }
 

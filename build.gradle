@@ -18,7 +18,7 @@ task clean << {
 }
 
 task downloadIosReleaseZip(type: FileDownload) {
-	sourceUrl = "http://www.plotprojects.com/static/plugins/Plot-iOS-v${iosVersionNumber}.zip"
+	sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-iOS-v${iosVersionNumber}.zip"
 	target = iosZip
 }
 
@@ -32,7 +32,7 @@ task extractIosReleaseZip(type: Copy, dependsOn: downloadIosReleaseZip) {
 }
 
 task downloadAndroidReleaseZip(type: FileDownload) {
-	sourceUrl = "http://www.plotprojects.com/static/plugins/Plot-Android-v${androidVersionNumber}.zip"
+	sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-Android-v${androidVersionNumber}.zip"
 	target = androidZip
 }
 

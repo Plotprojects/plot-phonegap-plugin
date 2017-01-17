@@ -1,6 +1,6 @@
 //
 //  PlotCordovaPlugin.m
-//  http://www.plotprojects.com/
+//  https://www.plotprojects.com/
 //
 
 #import "PlotCordovaPlugin.h"
@@ -38,6 +38,12 @@ static NSDictionary* launchOptions;
     [Plot handleNotification:localNotification];
 }
 
+-(void)pluginInitialize {
+    [super pluginInitialize];
+    
+    remoteHandler = [[PlotRemoteHandler alloc] init];
+}
+
 -(void)initPlot:(CDVInvokedUrlCommand*)command {
     if  (launchOptions != nil) {
         NSDictionary* args = (command.arguments.count > 0u) ? [command.arguments objectAtIndex:0] : nil;
@@ -61,6 +67,12 @@ static NSDictionary* launchOptions;
         NSMutableDictionary* extendedLaunchOptions = [NSMutableDictionary dictionaryWithDictionary:launchOptions];
         
         [extendedLaunchOptions setObject:[NSNumber numberWithBool:YES] forKey:@"plot-use-file-config"];
+        
+        NSString* remoteNotificationFilter = [args objectForKey:@"remoteNotificationFilter"];
+        [remoteHandler setRemoteNotificationFilter:remoteNotificationFilter];
+        
+        NSString* remoteGeotriggerHandler = [args objectForKey:@"remoteGeotriggerHandler"];
+        [remoteHandler setRemoteGeotriggerHandler:remoteGeotriggerHandler];
         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -200,7 +212,7 @@ static NSDictionary* launchOptions;
 
 -(void)defaultNotificationHandler:(CDVInvokedUrlCommand*)command {
     //NSDictionary* notification = [command.arguments objectAtIndex:0]
-    NSString* data = [command.arguments objectAtIndex:1];    
+    NSString* data = [command.arguments objectAtIndex:1];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:data]];
 }
@@ -212,7 +224,7 @@ static NSDictionary* launchOptions;
                                    [uiNotification.userInfo objectForKey:@"action"], @"data",
                                    [uiNotification.userInfo objectForKey:@"trigger"], @"trigger",
                                    [uiNotification.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
-                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",                            
+                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
                                    [uiNotification.userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
                                    [uiNotification.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
                                    [uiNotification.userInfo objectForKey:@"regionType"], @"regionType",
@@ -222,7 +234,7 @@ static NSDictionary* launchOptions;
     if ([uiNotification.userInfo objectForKey:@"matchIdentifier"]) {
         [result setObject:[uiNotification.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
     }
-
+    
     return result;
 }
 
@@ -260,8 +272,8 @@ static NSDictionary* launchOptions;
                                    [userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
                                    [userInfo objectForKey:@"regionType"], @"regionType",
                                    [userInfo objectForKey:@"matchRange"], @"matchRange",
-                                   nil];    
-
+                                   nil];
+    
     [result setObject:@([sentNotification.dateSent timeIntervalSince1970]) forKey:@"dateSent"];
     if (sentNotification.dateOpened != nil) {
         [result setObject:@([sentNotification.dateOpened timeIntervalSince1970]) forKey:@"dateOpened"];
@@ -289,7 +301,7 @@ static NSDictionary* launchOptions;
                                    [userInfo objectForKey:@"regionType"], @"regionType",
                                    [userInfo objectForKey:@"matchRange"], @"matchRange",
                                    nil];
-
+    
     [result setObject:@([sentGeotrigger.dateSent timeIntervalSince1970]) forKey:@"dateSent"];
     if (sentGeotrigger.dateHandled != nil) {
         [result setObject:@([sentGeotrigger.dateHandled timeIntervalSince1970]) forKey:@"dateHandled"];
@@ -302,8 +314,7 @@ static NSDictionary* launchOptions;
     return result;
 }
 
-- (NSString*)toJson:(id)jsonObj
-{
+- (NSString*)toJson:(id)jsonObj {
     NSError* error = nil;
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonObj
                                                        options:NSJSONWritingPrettyPrinted
@@ -318,23 +329,26 @@ static NSDictionary* launchOptions;
 }
 
 -(void)plotFilterNotifications:(PlotFilterNotifications*)_filterNotifications {
-    [filterNotificationsTimeoutTimer invalidate];
-    filterNotificationsTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:60
-                                                                       target:self
-                                                                     selector:@selector(plotFilterNotificationsTimeout)
-                                                                     userInfo:nil
-                                                                      repeats:NO];
-    filterNotifications = _filterNotifications;
-    NSMutableArray* notifications = [NSMutableArray arrayWithCapacity:filterNotifications.uiNotifications.count];
-    
-    for (UILocalNotification* uiNotification in filterNotifications.uiNotifications) {
-        [notifications addObject:[self uiNotificationToDictionary:uiNotification]];
+    if ([remoteHandler hasRemoteNotificationFilter]) {
+        [remoteHandler filterNotifications:_filterNotifications];
+    } else {
+        [filterNotificationsTimeoutTimer invalidate];
+        filterNotificationsTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:60
+                                                                           target:self
+                                                                         selector:@selector(plotFilterNotificationsTimeout)
+                                                                         userInfo:nil
+                                                                          repeats:NO];
+        filterNotifications = _filterNotifications;
+        NSMutableArray* notifications = [NSMutableArray arrayWithCapacity:filterNotifications.uiNotifications.count];
+        
+        for (UILocalNotification* uiNotification in filterNotifications.uiNotifications) {
+            [notifications addObject:[self uiNotificationToDictionary:uiNotification]];
+        }
+        
+        [self.commandDelegate evalJs:
+         [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runFilterCallback(%@)", [self toJson:notifications]]
+         ];
     }
-    
-    [self.commandDelegate evalJs:
-     [NSString stringWithFormat:@"cordova.require(\"cordova/plugin/plot\")._runFilterCallback(%@)", [self toJson:notifications]]
-     ];
-    
 }
 
 -(void)filterCallbackComplete:(CDVInvokedUrlCommand*)command {
@@ -368,6 +382,10 @@ static NSDictionary* launchOptions;
 
 -(void)plotFilterNotificationsTimeout {
     filterNotifications = nil;
+}
+
+-(void)plotHandleGeotriggers:(PlotHandleGeotriggers*)geotriggerHandler {
+    [remoteHandler handleGeotriggers:geotriggerHandler];
 }
 
 -(void)setStringSegmentationProperty:(CDVInvokedUrlCommand*)command {

@@ -174,6 +174,7 @@ cordova.define("cordova/plugin/plot", function (require, exports, module) {
   plot.mailDebugLog = function (successCallback, failureCallback) {
     cordova.exec(successCallback, failureCallback, "PlotCordovaPlugin", "mailDebugLog", []);
   };
+  
   module.exports = plot;
 });
 

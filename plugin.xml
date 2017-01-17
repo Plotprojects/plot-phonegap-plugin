@@ -25,6 +25,9 @@
 
         <source-file src="src/android/Plot-v1_15_4_beta.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
+        <source-file src="src/android/PlotRemoteHandler.java" target-dir="src/com/plotprojects/cordova" />
+        <source-file src="src/android/RemoteGeotriggerHandler.java" target-dir="src/com/plotprojects/cordova" />
+        <source-file src="src/android/RemoteNotificationFilter.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotCordovaNotificationOpenReceiver.java" target-dir="src/com/plotprojects/cordova" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -59,6 +62,9 @@
                 <meta-data android:name="debug" android:value="false" />
             </service>
             
+            <service android:name="com.plotprojects.cordova.RemoteGeotriggerHandler" android:exported="false" />
+        		<service android:name="com.plotprojects.cordova.RemoteNotificationFilter" android:exported="false" />
+            
             <provider
                 android:authorities="$PACKAGE_NAME.plot.debuglogprovider"
                 android:name="com.plotprojects.retail.android.DebugLogProvider"
@@ -74,6 +80,9 @@
         </config-file>
         <header-file src="src/ios/PlotCordovaPlugin.h" />
         <source-file src="src/ios/PlotCordovaPlugin.m" />
+        
+        <header-file src="src/ios/PlotRemoteHandler.h" />
+        <source-file src="src/ios/PlotRemoteHandler.m" />
 
         <header-file src="src/ios/Plot.h" />
         <source-file src="src/ios/libPlot-v1_15_4_beta3.a" framework="true" />
@@ -86,5 +95,5 @@
 					<string>Your location is used to instantly inform you when you are near a location that is interesting to you.</string>
 				</config-file>
     </platform>
-    <info>Please see our plugin documentation for more information: http://www.plotprojects.com/plot-app-library-documentation-latest/</info>
+    <info>Please see our plugin documentation for more information: https://www.plotprojects.com/plot-app-library-documentation-latest/</info>
 </plugin>
