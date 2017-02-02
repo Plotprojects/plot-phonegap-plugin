@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.15.5">
+        version="1.15.6">
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
@@ -61,9 +61,9 @@
             <service android:name="com.plotprojects.retail.android.PlotBackgroundService">
                 <meta-data android:name="debug" android:value="false" />
             </service>
-            
+
             <service android:name="com.plotprojects.cordova.RemoteGeotriggerHandler" android:exported="false" />
-        		<service android:name="com.plotprojects.cordova.RemoteNotificationFilter" android:exported="false" />
+        		<service android:name="com.plotprojects.cordova.RemoteNotificationFilter" android:exported="false" />            
             
             <provider
                 android:authorities="$PACKAGE_NAME.plot.debuglogprovider"
@@ -85,7 +85,7 @@
         <source-file src="src/ios/PlotRemoteHandler.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_15_4_beta3.a" framework="true" />
+        <source-file src="src/ios/libPlot-v1_15_4.a" framework="true" />
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
