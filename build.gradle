@@ -5,6 +5,8 @@ def pluginVersion = System.getenv('VersionNumber')
 def iosVersionNumber = System.getenv('iOSVersionNumber').replace('.', '_').replace('-', '_')
 def androidVersionNumber = System.getenv('AndroidVersionNumber').replace('.', '_').replace('-', '_')
 
+def provisioningTeam = System.getenv('ProvisioningTeam')
+
 def iosZip = file('tmp/ios.zip')
 def androidZip = file('tmp/android.zip')
 
@@ -134,14 +136,30 @@ task addPluginToExampleProject << {
   exec {
   	workingDir file(exampleProjectDir)
   	
-  	commandLine 'cordova', 'platform', 'add', 'android', 'ios'
+  	commandLine 'cordova', 'platform', 'add', 'android@6.2.2', 'ios'
   }
 }
 
 addPluginToExampleProject.mustRunAfter clean
 addPluginToExampleProject.mustRunAfter updatePluginXml
 
-task compileIosExample(type: Exec, dependsOn: addPluginToExampleProject) {
+task writeBuildJson << {
+	def file = new File("plotprojects-example/build.json")
+	file.createNewFile()	
+	file.text = """{
+  "ios": {
+    "debug": {
+      "developmentTeam": "${provisioningTeam}"
+    },
+    "release": {
+      "developmentTeam": "${provisioningTeam}"
+    }
+  }
+}"""
+
+}
+
+task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
 	workingDir file(exampleProjectDir)
 	
 	commandLine 'cordova', 'build', '--device', 'ios'

@@ -3,3 +3,4 @@ tmp/
 .gradle/
 plotprojects-example/platforms/*
 plotprojects-example/plugins/*
+build.json
