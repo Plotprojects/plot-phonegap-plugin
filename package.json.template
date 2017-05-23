@@ -2,7 +2,7 @@
     "version": "${pluginVersion}",
     "name": "cordova-pp-test",
     "cordova_name": "Plot",
-    "author": "Plot Projects <info@plotprojects.com> (http://www.plotprojects.com)",
+    "author": "Plot Projects <info@plotprojects.com> (https://www.plotprojects.com)",
     "description": "Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.",
     "cordova": {
 			"id": "com.plotprojects.cordova",

@@ -192,7 +192,8 @@ possible that the request is then tried again at a later time. When an endpoint 
 **Enabling remote notification filter and handler:**
 
 This feature is enabled by passing the URL of the http(s) endpoint in the `plot.init(configuration)` call. Use `remoteNotificationFilter` for the remote notification filter and
-`remoteGeotriggerHandler` for the geotrigger handler. When those fields are not present the remote filter/handler is disabled.
+`remoteGeotriggerHandler` for the geotrigger handler. When those fields are not present the remote filter/handler is disabled. It is possible to include some metadata in the url, 
+for example a _user identifier_.
 
 Due to more [strict App Store requirements](https://developer.apple.com/news/?id=12212016b) related to the user's privacy, it is strongly recommended to use an url that starts with
 `https://` instead of `http://`. You can still use `http://` urls during development. Also for Android using `https` has benefits, such as the guarantee you're talking to the right
@@ -201,8 +202,8 @@ host and preventing the message being intercepted.
 ```javascript
 plot.init(
   {
-    "remoteNotificationFilter": "https://www.example.com/myRemoteNotificationFilter",
-    "remoteGeotriggerHandler": "https://www.example.com/myRemoteGeotriggerHandler"
+    "remoteNotificationFilter": "https://www.example.com/myRemoteNotificationFilter?userId=625DEECB-5A77-4C1C-80F4-286704CDB256",
+    "remoteGeotriggerHandler": "https://www.example.com/myRemoteGeotriggerHandler?userId=625DEECB-5A77-4C1C-80F4-286704CDB256"
   },
   function() { console.log("success"); },
   function(err) { console.log("failed"); console.log(err); }
