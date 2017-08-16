@@ -14,28 +14,29 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
 
 /** 
  * \memberof Plot
- * Key for userInfo properties in UILocalNotifications created by Plot.
+ * Key for userInfo properties in UNNotificationRequests created by Plot.
  */
 extern NSString* const PlotNotificationIdentifier;
 
 /**
  * \memberof Plot
- * Key for userInfo properties in UILocalNotifications created by Plot. Contains an unique identifier for this match (instance of this notification).
+ * Key for userInfo properties in UNNotificationRequests created by Plot. Contains an unique identifier for this match (instance of this notification).
  */
 extern NSString* const PlotNotificationMatchIdentifier;
 
 /**
  * \memberof Plot
- * Key for userInfo properties in UILocalNotifications created by Plot.
+ * Key for userInfo properties in UNNotificationRequests created by Plot.
  */
 extern NSString* const PlotNotificationMessage;
 
 /**
  * \memberof Plot
- * Key for userInfo properties in UILocalNotifications created by Plot. Synonym for PlotNotificationDataKey.
+ * Key for userInfo properties in UNNotificationRequests created by Plot. Synonym for PlotNotificationDataKey.
  */
 extern NSString* const PlotNotificationActionKey;
 
@@ -145,19 +146,19 @@ extern NSString* const PlotNotificationHandlerTypeApplink;
 
 /**
  * \memberof Plot
- * Key for userInfo properties for geotriggers in UILocalNotifications created by Plot.
+ * Key for userInfo properties for geotriggers in UNNotificationRequests created by Plot.
  */
 extern NSString* const PlotGeotriggerIdentifier; //synonym for PlotNotificationIdentifier
 
 /**
  * \memberof Plot
- * Key for userInfo properties for geotriggers in UILocalNotifications created by Plot.
+ * Key for userInfo properties for geotriggers in UNNotificationRequests created by Plot.
  */
 extern NSString* const PlotGeotriggerMatchIdentifier; // synonym for PlotNotificationMatchIdentifier
 
 /**
  * \memberof Plot
- * Key for userInfo properties for geotriggers in UILocalNotifications created by Plot.
+ * Key for userInfo properties for geotriggers in UNNotificationRequests created by Plot.
  */
 extern NSString* const PlotGeotriggerName; //synonym for PlotNotificationMessage
 
@@ -235,21 +236,21 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 @interface PlotFilterNotifications : NSObject
 
-/** All notifications that are within the radius of the geofence. The type of the objects in the array is UILocalNotification*.
+/** All notifications that are within the radius of the geofence. The type of the objects in the array is UNNotificationRequest*.
  */
-@property (strong, nonatomic, readonly) NSArray<UILocalNotification*>* uiNotifications;
+@property (strong, nonatomic, readonly) NSArray<UNNotificationRequest*>* uiNotifications;
 
-/** Shows the UILocalNotification* in the array in the notification center of the device. When a cooldown period is specified, only the first notification is shown when the cooldown is not in effect. Make sure to always call this method at the end of the filtering, even when the array of notifications to show is empty. This way our plugin knows filtering has finished.
+/** Shows the UNNotificationRequest* in the array in the notification center of the device. When a cooldown period is specified, only the first notification is shown when the cooldown is not in effect. Make sure to always call this method at the end of the filtering, even when the array of notifications to show is empty. This way our plugin knows filtering has finished.
  * @param uiNotifications The array of local notifications.
  */
--(void)showNotifications:(NSArray<UILocalNotification*>*)uiNotifications;
+-(void)showNotifications:(NSArray<UNNotificationRequest*>*)uiNotifications;
 
 /**
  * Utility method that helps you test your notification filter. Returns the notifications your filter returns
- * @param notifications notifications to pass to your delegate. The elements must be of type UILocalNotification.
+ * @param notifications notifications to pass to your delegate. The elements must be of type UNNotificationRequest.
  * @param delegate the delegate to test.
  */
-+(NSArray*)testFilterNotifications:(NSArray<UILocalNotification*>*)notifications delegate:(id<PlotDelegate>)delegate;
++(NSArray*)testFilterNotifications:(NSArray<UNNotificationRequest*>*)notifications delegate:(id<PlotDelegate>)delegate;
 
 @end
 
@@ -258,7 +259,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 @interface PlotGeotrigger : NSObject
 
-/** Equivalent of the userInfo for a UILocalNotification, use geotrigger keys to retrieve values of the geotrigger.
+/** Equivalent of the userInfo for a UNNotificationRequest, use geotrigger keys to retrieve values of the geotrigger.
  */
 @property (nonatomic, copy) NSDictionary *userInfo;
 
@@ -293,7 +294,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 @interface PlotSentNotification : NSObject
 
-/** Equivalent of the userInfo for a UILocalNotification, use UILocalNotifications keys to retrieve values of the sent notification.
+/** Equivalent of the userInfo for a UNNotificationRequest, use UNNotificationRequests keys to retrieve values of the sent notification.
  */
 @property (nonatomic, copy, readonly) NSDictionary *userInfo;
 
@@ -314,7 +315,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 @interface PlotSentGeotrigger : NSObject
 
-/** Equivalent of the userInfo for a UILocalNotification, use geotrigger keys to retrieve values of the geotrigger.
+/** Equivalent of the userInfo for a UNNotificationRequest, use geotrigger keys to retrieve values of the geotrigger.
  */
 @property (nonatomic, copy, readonly) NSDictionary *userInfo;
 
@@ -339,7 +340,7 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  * @param notification The received local notification.
  * @param data The custom handler.
  */
--(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data;
+-(void)plotHandleNotification:(UNNotificationRequest*)notification data:(NSString*)data;
 
 /** Implement this method if you want to prevent notifications from being shown or modify notifications before they are shown. Select which notifications have to be shown and call [filterNotifications showNotifications:notifications]. Make sure to always call this method, even when the array of notifications is empty. Please note that notifications that have been filtered this way can be triggered again later and that in-app landing pages bypass this filter.
  * @param filterNotifications
@@ -473,11 +474,6 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  */
 +(BOOL)isEnabled;
 
-/** The notification will be opened. You must place this method call in the application:didReceiveLocalNotification: method in your application delegate. It opens Safari with the URL enclosed in the notification, unless your delegate has the plotHandleNotification: method implemented.
- * @param localNotification The notification that is processed.
- */
-+(void)handleNotification:(UILocalNotification*)localNotification;
-
 /**
  * \deprecated
  * Deprecated way of setting the Plot delegate.
@@ -548,10 +544,10 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 +(void)setAdvertisingIdentifier:(NSUUID*)advertisingIdentifier advertisingTrackingEnabled:(BOOL)advertisingTrackingEnabled;
 
 /**
- * Returns a list of all loaded notifications. These include the notifications that are already sent. Type is an array of UILocalNotification. You can retrieve data from the userInfo dictionary.
+ * Returns a list of all loaded notifications. These include the notifications that are already sent. Type is an array of UNNotificationRequest. You can retrieve data from the userInfo dictionary.
  * This call uses blocking I/O, therefore shouldn't be run on the main thread.
  */
-+(NSArray<UILocalNotification*>*)loadedNotifications;
++(NSArray<UNNotificationRequest*>*)loadedNotifications;
 
 /**
  * Returns a list of all loaded geotriggers. Type is an array of PlotGeotrigger. You can retrieve data from the userInfo dictionary.

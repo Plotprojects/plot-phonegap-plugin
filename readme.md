@@ -6,8 +6,8 @@ Get location based notifications in your PhoneGap app! Now also supports iBeacon
 
 ### Supported platforms ###
 
-This plugins requires PhoneGap 3.0.0 or higher.
-This plugins supports both IOS 6 or newer, and Android 2.3 or newer.
+This plugins requires PhoneGap 4.0.0 or higher.
+This plugins supports both IOS 10 or newer, and Android 2.3 or newer.
 
 ### Phonegap Build ###
 
@@ -58,12 +58,8 @@ following properties:
 
 | Parameter | Type | Optional | Description |
 |---|---|---|---|
-| publicKey | String | yes | _deprecated_ The public token to use. Preferably use the `plotconfig.json` file.  |
-| cooldownPeriod | Number | yes | _deprecated_ The cooldown override to use. Has to be enabled in the dashboard. Preferably use the `plotconfig.json` file. |
-| enableOnFirstRun | Boolean | yes | _deprecated_ Whether to automatically enable Plot the first time. Defaults to `true`. Preferably use the `plotconfig.json` file. |
 | remoteNotificationFilter | String | yes | Sets the url of the remote notification filter. See the section about Notification Filter chapter for more info. For best results use an url starting with `https://. |
 | remoteGeotriggerHandler | String | yes | Sets the url of the remote geotrigger handler. See the section about Notification Filter chapter for more info. For best results use an url starting with `https://. |
-| debug | boolean | yes | Whether to enable debug logging on iOS. Doesn't do anything for Android. |
 
 _plot.enable(successCallback, failureCallback)_
 

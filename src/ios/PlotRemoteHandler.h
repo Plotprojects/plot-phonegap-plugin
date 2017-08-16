@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "Plot.h"
+#import <UserNotifications/UserNotifications.h>
 
 @interface PlotRemoteHandler : NSObject {
 }

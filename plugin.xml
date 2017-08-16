@@ -2,9 +2,9 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="1.15.7">
+        version="2.0.0-beta">
     <engines>
-        <engine name="cordova" version=">=3.0.0" />
+        <engine name="cordova" version=">=4.0.0" />
     </engines>
     <name>Plot</name>
     <description>Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.</description>
@@ -70,6 +70,8 @@
                 android:name="com.plotprojects.retail.android.DebugLogProvider"
                 android:exported="true" />
         </config-file>
+        
+        <info>Please see our plugin documentation for more information: https://www.plotprojects.com/plot-app-library-documentation-latest/</info>
 
     </platform>
     <platform name="ios">
@@ -83,17 +85,36 @@
         
         <header-file src="src/ios/PlotRemoteHandler.h" />
         <source-file src="src/ios/PlotRemoteHandler.m" />
+        
+        <header-file src="src/ios/PlotPlotDelegate.h" />
+        <source-file src="src/ios/PlotPlotDelegate.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/libPlot-v1_15_5_beta.a" framework="true" />
+        <source-file src="src/ios/PlotProjects.framework" framework="true" embed="true"/>
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
         <framework src="MessageUI.framework" />
+        <framework src="UserNotifications.framework" />
         
+        <config-file parent="/*" target="config.xml">
+ +            <preference name="deployment-target" value="10.0"/>
+ +        </config-file>
+ 
         <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
-					<string>Your location is used to instantly inform you when you are near a location that is interesting to you.</string>
+					<string>Your location is used in the background to instantly inform you when you are near a location that is interesting to you.</string>
 				</config-file>
+				<config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+					<string>Your location is used to inform you when you are near a location that is interesting to you.</string>
+				</config-file>
+				<config-file target="*-Info.plist" parent="NSLocationAlwaysAndWhenInUseUsageDescription">
+					<string>Your location is used in the background to instantly inform you when you are near a location that is interesting to you.</string>
+				</config-file>
+				
+				<info>Ensure that PlotProjects.framework is listed as Embedded Binary and Linked Framework in the XCode Project settings.
+				
+Please see our plugin documentation for more information: https://www.plotprojects.com/plot-app-library-documentation-latest/</info>
+				
     </platform>
-    <info>Please see our plugin documentation for more information: https://www.plotprojects.com/plot-app-library-documentation-latest/</info>
+    
 </plugin>

@@ -6,11 +6,13 @@
 #import "PlotCordovaPlugin.h"
 #import "Plot.h"
 #import <UIKit/UIKit.h>
+#import "PlotPlotDelegate.h"
 
 @implementation PlotCordovaPlugin
 
 
 static NSDictionary* launchOptions;
+static PlotPlotDelegate* plotDelegate;
 
 
 +(void)load {
@@ -19,10 +21,6 @@ static NSDictionary* launchOptions;
                                                  name:UIApplicationDidFinishLaunchingNotification
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didReceiveLocalNotification:)
-                                                 name:CDVLocalNotification
-                                               object:nil];
 }
 
 +(void)didFinishLaunching:(NSNotification*)notification {
@@ -31,11 +29,9 @@ static NSDictionary* launchOptions;
         //launchOptions is nil when not start because of notification or url open
         launchOptions = [NSDictionary dictionary];
     }
-}
-
-+(void)didReceiveLocalNotification:(NSNotification*)notification {
-    UILocalNotification* localNotification = [notification object];
-    [Plot handleNotification:localNotification];
+    
+    plotDelegate = [[PlotPlotDelegate alloc] init];
+    [Plot initializeWithLaunchOptions:launchOptions delegate:plotDelegate];
 }
 
 -(void)pluginInitialize {
@@ -48,40 +44,23 @@ static NSDictionary* launchOptions;
     if  (launchOptions != nil) {
         NSDictionary* args = (command.arguments.count > 0u) ? [command.arguments objectAtIndex:0] : nil;
         
-        NSString* publicKey = [args objectForKey:@"publicKey"];
+        [plotDelegate setDelegate:self];
         
-        PlotConfiguration* config = [[PlotConfiguration alloc] initWithPublicKey:publicKey
-                                                                        delegate:self];
-        
-        NSNumber* cooldownPeriod = [args objectForKey:@"cooldownPeriod"];
-        
-        if (cooldownPeriod != nil) {
-            [config setCooldownPeriod:[cooldownPeriod intValue]];
+        NSArray<PlotFilterNotifications*>* notificationsToFilter = [plotDelegate notificationsToFilter];
+        for(PlotFilterNotifications* n in notificationsToFilter) {
+            [plotDelegate plotFilterNotifications:n];
         }
         
-        NSNumber* enableOnFirstRun = [args objectForKey:@"enableOnFirstRun"];
-        if (enableOnFirstRun != nil) {
-            [config setEnableOnFirstRun:[enableOnFirstRun boolValue]];
+        NSArray<UNNotificationRequest*>* notificationsToHandle = [plotDelegate notificationsToHandle];
+        for(UNNotificationRequest* n in notificationsToHandle){
+            [plotDelegate plotHandleNotification:n data:Nil];
         }
-        
-        NSMutableDictionary* extendedLaunchOptions = [NSMutableDictionary dictionaryWithDictionary:launchOptions];
-        
-        [extendedLaunchOptions setObject:[NSNumber numberWithBool:YES] forKey:@"plot-use-file-config"];
         
         NSString* remoteNotificationFilter = [args objectForKey:@"remoteNotificationFilter"];
         [remoteHandler setRemoteNotificationFilter:remoteNotificationFilter];
         
         NSString* remoteGeotriggerHandler = [args objectForKey:@"remoteGeotriggerHandler"];
         [remoteHandler setRemoteGeotriggerHandler:remoteGeotriggerHandler];
-        
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        if ([[args objectForKey:@"debug"] boolValue]) {
-            [PlotDebug initializeWithConfiguration:config launchOptions:extendedLaunchOptions];
-        } else {
-            [PlotRelease initializeWithConfiguration:config launchOptions:extendedLaunchOptions];
-        }
-#pragma clang diagnostic pop
         
         launchOptions = nil;
     }
@@ -127,7 +106,7 @@ static NSDictionary* launchOptions;
         NSMutableArray* result = [NSMutableArray array];
         NSArray* notifications = [Plot loadedNotifications];
         
-        for (UILocalNotification* uiNotification in notifications) {
+        for (UNNotificationRequest* uiNotification in notifications) {
             [result addObject:[self uiNotificationToDictionary:uiNotification]];
         }
         
@@ -203,7 +182,7 @@ static NSDictionary* launchOptions;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
--(void)plotHandleNotification:(UILocalNotification*)notification data:(NSString*)data {
+-(void)plotHandleNotification:(UNNotificationRequest*)notification data:(NSString*)data {
     NSDictionary* n = [self uiNotificationToDictionary:notification];
     
     [self.commandDelegate evalJs:
@@ -214,25 +193,30 @@ static NSDictionary* launchOptions;
     //NSDictionary* notification = [command.arguments objectAtIndex:0]
     NSString* data = [command.arguments objectAtIndex:1];
     
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:data]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:data] options:@{} completionHandler:^(BOOL success){
+        if(!success) {
+            NSLog(@"Unable to open URL.");
+        }
+    }];
 }
 
--(NSDictionary*)uiNotificationToDictionary:(UILocalNotification*)uiNotification {
+-(NSDictionary*)uiNotificationToDictionary:(UNNotificationRequest*)uiNotification {
+    
     NSMutableDictionary* result = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   uiNotification.alertBody, @"message",
-                                   [uiNotification.userInfo objectForKey:@"identifier"], @"id",
-                                   [uiNotification.userInfo objectForKey:@"action"], @"data",
-                                   [uiNotification.userInfo objectForKey:@"trigger"], @"trigger",
-                                   [uiNotification.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
-                                   [uiNotification.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
-                                   [uiNotification.userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
-                                   [uiNotification.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
-                                   [uiNotification.userInfo objectForKey:@"regionType"], @"regionType",
-                                   [uiNotification.userInfo objectForKey:@"matchRange"], @"matchRange",
+                                   uiNotification.content.body, @"message",
+                                   [uiNotification.content.userInfo objectForKey:@"identifier"], @"id",
+                                   [uiNotification.content.userInfo objectForKey:@"action"], @"data",
+                                   [uiNotification.content.userInfo objectForKey:@"trigger"], @"trigger",
+                                   [uiNotification.content.userInfo objectForKey:@"geofenceLatitude"], @"geofenceLatitude",
+                                   [uiNotification.content.userInfo objectForKey:@"geofenceLongitude"], @"geofenceLongitude",
+                                   [uiNotification.content.userInfo objectForKey:@"dwellingMinutes"], @"dwellingMinutes",
+                                   [uiNotification.content.userInfo objectForKey:@"notificationHandlerType"], @"notificationHandlerType",
+                                   [uiNotification.content.userInfo objectForKey:@"regionType"], @"regionType",
+                                   [uiNotification.content.userInfo objectForKey:@"matchRange"], @"matchRange",
                                    nil];
     
-    if ([uiNotification.userInfo objectForKey:@"matchIdentifier"]) {
-        [result setObject:[uiNotification.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
+    if ([uiNotification.content.userInfo objectForKey:@"matchIdentifier"]) {
+        [result setObject:[uiNotification.content.userInfo objectForKey:@"matchIdentifier"] forKey:@"matchIdentifier"];
     }
     
     return result;
@@ -341,7 +325,7 @@ static NSDictionary* launchOptions;
         filterNotifications = _filterNotifications;
         NSMutableArray* notifications = [NSMutableArray arrayWithCapacity:filterNotifications.uiNotifications.count];
         
-        for (UILocalNotification* uiNotification in filterNotifications.uiNotifications) {
+        for (UNNotificationRequest* uiNotification in filterNotifications.uiNotifications) {
             [notifications addObject:[self uiNotificationToDictionary:uiNotification]];
         }
         
@@ -361,16 +345,21 @@ static NSDictionary* launchOptions;
     
     for (NSDictionary* notification in notifications) {
         NSString* identifier = [notification objectForKey:@"id"];
-        for (UILocalNotification* uiNotification in filterNotifications.uiNotifications) {
-            if ([[uiNotification.userInfo objectForKey:@"identifier"] isEqualToString:identifier]) {
-                uiNotification.alertBody = [notification objectForKey:@"message"];
+        for (UNNotificationRequest* uiNotification in filterNotifications.uiNotifications) {
+            if ([[uiNotification.content.userInfo objectForKey:@"identifier"] isEqualToString:identifier]) {
+                NSString* newText = [notification objectForKey:@"message"];
+                UNMutableNotificationContent* newContent =  [[UNMutableNotificationContent alloc] init];
+                newContent.body = newText;
                 
-                NSMutableDictionary* userInfo = [uiNotification.userInfo mutableCopy];
+                NSMutableDictionary* userInfo = [uiNotification.content.userInfo mutableCopy];
                 [userInfo setObject:[notification objectForKey:@"data"] forKey:@"action"];
-                uiNotification.userInfo = userInfo;
+                newContent.userInfo = userInfo;
                 
-                [notificationsToShow addObject: uiNotification];
+                UNNotificationRequest* newNotification =  [UNNotificationRequest requestWithIdentifier:uiNotification.identifier content:newContent trigger:uiNotification.trigger];
+                
+                [notificationsToShow addObject: newNotification];
                 break;
+                
             }
         }
     }

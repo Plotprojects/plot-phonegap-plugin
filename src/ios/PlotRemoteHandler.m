@@ -17,8 +17,8 @@ static NSString * const GEOTRIGGER_HANDLER_URL_KEY = @"geotrigger-handler-url";
     
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    for (UILocalNotification* n in filterNotifications.uiNotifications) {
-        [userInfoDictionaries addObject:n.userInfo];
+    for (UNNotificationRequest* n in filterNotifications.uiNotifications) {
+        [userInfoDictionaries addObject:n.content.userInfo];
     }
 #pragma clang diagnostic pop
     NSError* error = nil;
@@ -70,20 +70,29 @@ selectedNotifications:(NSArray*)notifications {
         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        for (UILocalNotification* plotNotification in filterNotifications.uiNotifications) { //arrays should stay small
-            NSString* plotIdentifier = [plotNotification.userInfo objectForKey:PlotNotificationIdentifier];
+        for (UNNotificationRequest* plotNotification in filterNotifications.uiNotifications) { //arrays should stay small
+            NSString* plotIdentifier = [plotNotification.content.userInfo objectForKey:PlotNotificationIdentifier];
             if ([plotIdentifier isEqualToString:identifier]) {
+                
+                UNMutableNotificationContent* newContent =  [[UNMutableNotificationContent alloc] init];
+                
                 if (message != nil) {
-                    plotNotification.alertBody = [message stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+                    NSString* newText = [message stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+                    newContent.body = newText;
+                    //plotNotification.content.body = [message stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
                 }
                 if (data != nil) {
-                    NSMutableDictionary* newUserInfo = [NSMutableDictionary dictionaryWithDictionary:plotNotification.userInfo];
+                    NSMutableDictionary* newUserInfo = [NSMutableDictionary dictionaryWithDictionary:plotNotification.content.userInfo];
                     [newUserInfo setObject:data forKey:PlotNotificationDataKey];
-                    plotNotification.userInfo = newUserInfo;
+                    newContent.userInfo = newUserInfo;
+                    //plotNotification.content.userInfo = newUserInfo;
                 }
                 
+                UNNotificationRequest* newNotification =  [UNNotificationRequest requestWithIdentifier:plotNotification.identifier content:newContent trigger:plotNotification.trigger];
+                
                 found = YES;
-                [notificationsToSend addObject:plotNotification];
+                [notificationsToSend addObject:newNotification];
+                //[notificationsToSend addObject:plotNotification];
                 break;
             }
         }

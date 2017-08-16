@@ -20,7 +20,7 @@ task clean << {
 }
 
 task downloadIosReleaseZip(type: FileDownload) {
-	sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-iOS-v${iosVersionNumber}.zip"
+	sourceUrl = "https://www.plotprojects.com/static/plugins/PlotProjects-iOS-v${iosVersionNumber}.zip"
 	target = iosZip
 }
 
@@ -48,7 +48,7 @@ task extractAndroidReleaseZip(type: Copy, dependsOn: downloadAndroidReleaseZip) 
 }
 
 task deleteOldVersionIos << {
-  def objectFiles = fileTree(dir: 'src/ios', include: '**/*.a')
+  def objectFiles = fileTree(dir: 'src/ios', includes: ['**/*.a', '**/*.framework'])
     
 	delete objectFiles.files
 }
@@ -60,21 +60,14 @@ task deleteOldVersionAndroid << {
 }
 
 task insertIosLibrary(dependsOn: ['extractIosReleaseZip', 'deleteOldVersionIos']) << {
-	def objectFile = fileTree(dir: 'tmp/ios', include: '**/*.a').singleFile
-	
-	def headerFile = fileTree(dir: 'tmp/ios', include: '**/Plot.h').singleFile
+	def objectFile = fileTree('tmp/ios/PlotProjects-v2_0_0_beta/PlotProjects.framework')
 	
 	copy {
 		from objectFile
-		into file(iosSource)
+		into file(iosSource + "/PlotProjects.framework/")
 	}
 	
-	copy {
-		from headerFile
-		into file(iosSource)
-	}
-	
-	ext.filename = objectFile.name
+	ext.filename = "PlotProjects.framework"
 }
 
 task insertAndroidLibrary(dependsOn: ['extractAndroidReleaseZip', 'deleteOldVersionAndroid']) << {
