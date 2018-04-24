@@ -162,7 +162,7 @@ task writeBuildJson << {
   workingDir file(exampleProjectDir)
   
   commandLine 'cordova', 'build', '--device', 'android'
-}
+}*/
 
 task createGitCommit << {
   exec {
@@ -174,7 +174,7 @@ task createGitCommit << {
   exec {
     commandLine 'git', 'push', gitRepo, 'master'
   }
-}*/
+}
 
 createGitCommit.mustRunAfter updatePluginXml
 
