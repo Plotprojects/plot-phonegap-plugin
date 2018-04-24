@@ -54,7 +54,7 @@ task deleteOldVersionIos << {
 }
 
 task deleteOldVersionAndroid << {
-  def objectFiles = fileTree(dir: 'src/android', include: '**/*.jar')
+  def objectFiles = fileTree(dir: 'src/android', include: '**/*.aar')
     
 	delete objectFiles.files
 }
@@ -71,7 +71,7 @@ task insertIosLibrary(dependsOn: ['extractIosReleaseZip', 'deleteOldVersionIos']
 }
 
 task insertAndroidLibrary(dependsOn: ['extractAndroidReleaseZip', 'deleteOldVersionAndroid']) << {
-	def objectFile = fileTree(dir: 'tmp/android', include: '**/*.jar').singleFile
+	def objectFile = fileTree(dir: 'tmp/android', include: '**/*.aar').singleFile
 	
 	copy {
 		from objectFile
