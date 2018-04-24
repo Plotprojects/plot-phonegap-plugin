@@ -95,7 +95,7 @@ task updatePluginXml(dependsOn: ['insertIosLibrary', 'insertAndroidLibrary']) <<
   }
 }
 
-/* task addPluginToExampleProject << {
+task addPluginToExampleProject << {
   def platformsDir = exampleProjectDir + "/platforms"
   file( platformsDir ).list().each{
       f -> delete "${platformsDir}/${f}"
@@ -131,10 +131,10 @@ task updatePluginXml(dependsOn: ['insertIosLibrary', 'insertAndroidLibrary']) <<
     
     commandLine 'cordova', 'platform', 'add', 'android@6.2.2', 'ios'
   }
-}*/
+}
 
-//addPluginToExampleProject.mustRunAfter clean
-//addPluginToExampleProject.mustRunAfter updatePluginXml
+addPluginToExampleProject.mustRunAfter clean
+addPluginToExampleProject.mustRunAfter updatePluginXml
 
 task writeBuildJson << {
   def file = new File("plotprojects-example/build.json")
@@ -152,17 +152,17 @@ task writeBuildJson << {
 
 }
 
-/*task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
+task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
   workingDir file(exampleProjectDir)
   
   commandLine 'cordova', 'build', '--device', 'ios'
-}*/
+}
 
-/*task compileAndroidExample(type: Exec, dependsOn: addPluginToExampleProject) {
+task compileAndroidExample(type: Exec, dependsOn: addPluginToExampleProject) {
   workingDir file(exampleProjectDir)
   
   commandLine 'cordova', 'build', '--device', 'android'
-}*/
+}
 
 task createGitCommit << {
   exec {
@@ -213,13 +213,13 @@ replaceConfig << {
   new File('plotprojects-example/www/plotconfig.json').write(newConfig)
 }
 
-//compileAndroidExample.mustRunAfter replaceConfig
-//compileIosExample.mustRunAfter replaceConfig
+compileAndroidExample.mustRunAfter replaceConfig
+compileIosExample.mustRunAfter replaceConfig
 
-/* task compileExamples(dependsOn: ['compileAndroidExample', 'compileIosExample']) {
+task compileExamples(dependsOn: ['compileAndroidExample', 'compileIosExample']) {
   description "Compiles the examples"
   group "Release"
-}*/
+}
 
 task staging(dependsOn: ['clean', 'updatePluginXml']) {
   description "Releases a new version of the library"
