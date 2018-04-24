@@ -16,12 +16,12 @@ def examplePublicToken = System.getenv('PUBLIC_TOKEN')
 def gitRepo = "origin"
 
 task clean << {
-	delete file('tmp')
+  delete file('tmp')
 }
 
 task downloadIosReleaseZip(type: FileDownload) {
-	sourceUrl = "https://www.plotprojects.com/static/plugins/PlotProjects-iOS-v${iosVersionNumber}.zip"
-	target = iosZip
+  sourceUrl = "https://www.plotprojects.com/static/plugins/PlotProjects-iOS-v${iosVersionNumber}.zip"
+  target = iosZip
 }
 
 downloadIosReleaseZip.mustRunAfter clean
@@ -34,8 +34,8 @@ task extractIosReleaseZip(type: Copy, dependsOn: downloadIosReleaseZip) {
 }
 
 task downloadAndroidReleaseZip(type: FileDownload) {
-	sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-Android-v${androidVersionNumber}.zip"
-	target = androidZip
+  sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-Android-v${androidVersionNumber}.zip"
+  target = androidZip
 }
 
 downloadAndroidReleaseZip.mustRunAfter clean
@@ -50,96 +50,96 @@ task extractAndroidReleaseZip(type: Copy, dependsOn: downloadAndroidReleaseZip) 
 task deleteOldVersionIos << {
   def objectFiles = fileTree(dir: 'src/ios', includes: ['**/*.a', '**/*.framework'])
     
-	delete objectFiles.files
+  delete objectFiles.files
 }
 
 task deleteOldVersionAndroid << {
   def objectFiles = fileTree(dir: 'src/android', include: '**/*.aar')
     
-	delete objectFiles.files
+  delete objectFiles.files
 }
 
 task insertIosLibrary(dependsOn: ['extractIosReleaseZip', 'deleteOldVersionIos']) << {
-	def objectFile = fileTree("tmp/ios/PlotProjects-v${iosVersionNumber}/PlotProjects.framework")
-	
-	copy {
-		from objectFile
-		into file(iosSource + "/PlotProjects.framework/")
-	}
-	
-	ext.filename = "PlotProjects.framework"
+  def objectFile = fileTree("tmp/ios/PlotProjects-v${iosVersionNumber}/PlotProjects.framework")
+  
+  copy {
+    from objectFile
+    into file(iosSource + "/PlotProjects.framework/")
+  }
+  
+  ext.filename = "PlotProjects.framework"
 }
 
 task insertAndroidLibrary(dependsOn: ['extractAndroidReleaseZip', 'deleteOldVersionAndroid']) << {
-	def objectFile = fileTree(dir: "tmp/android/Plot-v${androidVersionNumber}.aar").singleFile
-	
-	copy {
-		from objectFile
-		into file(androidSource)
-	}
-	
-	ext.filename = objectFile.name
+  def objectFile = fileTree(dir: "tmp/android/Plot-v${androidVersionNumber}.aar").singleFile
+  
+  copy {
+    from objectFile
+    into file(androidSource)
+  }
+  
+  ext.filename = objectFile.name
 }
 
 task updatePluginXml(dependsOn: ['insertIosLibrary', 'insertAndroidLibrary']) << {
-	copy {
+  copy {
     from fileTree(dir: '.', include: '*.template')
     into file('.')
     
     rename '(.*)\\.template', '$1'
 
     expand(iosObjectFile: insertIosLibrary.ext.filename,
-    	androidObjectFile: insertAndroidLibrary.ext.filename,
-    	pluginVersion: pluginVersion
-    	)
+      androidObjectFile: insertAndroidLibrary.ext.filename,
+      pluginVersion: pluginVersion
+      )
   }
 }
 
-task addPluginToExampleProject << {
-	def platformsDir = exampleProjectDir + "/platforms"
-	file( platformsDir ).list().each{
-			f -> delete "${platformsDir}/${f}"
-	}
-	
-	def pluginsDir = exampleProjectDir + "/plugins"
-	file( pluginsDir ).list().each{
-			f -> delete "${pluginsDir}/${f}"
-	}
-	
-	copy {
-		from '.'
-		into 'tmp/plugin'
-		
-		exclude 'tmp/'
-		exclude 'plotprojects-example/'
-	}
+/* task addPluginToExampleProject << {
+  def platformsDir = exampleProjectDir + "/platforms"
+  file( platformsDir ).list().each{
+      f -> delete "${platformsDir}/${f}"
+  }
+  
+  def pluginsDir = exampleProjectDir + "/plugins"
+  file( pluginsDir ).list().each{
+      f -> delete "${pluginsDir}/${f}"
+  }
+  
+  copy {
+    from '.'
+    into 'tmp/plugin'
+    
+    exclude 'tmp/'
+    exclude 'plotprojects-example/'
+  }
 
-	exec {
-		workingDir file(exampleProjectDir)
-	
+  exec {
+    workingDir file(exampleProjectDir)
+  
     commandLine 'cordova', 'plugin', 'add', file('tmp/plugin').getAbsolutePath()
   }
   
   exec {
-		workingDir file(exampleProjectDir)
-	
+    workingDir file(exampleProjectDir)
+  
     commandLine 'cordova', 'plugin', 'add', 'cordova-plugin-console'
   }
   
   exec {
-  	workingDir file(exampleProjectDir)
-  	
-  	commandLine 'cordova', 'platform', 'add', 'android@6.2.2', 'ios'
+    workingDir file(exampleProjectDir)
+    
+    commandLine 'cordova', 'platform', 'add', 'android@6.2.2', 'ios'
   }
-}
+}*/
 
-addPluginToExampleProject.mustRunAfter clean
-addPluginToExampleProject.mustRunAfter updatePluginXml
+//addPluginToExampleProject.mustRunAfter clean
+//addPluginToExampleProject.mustRunAfter updatePluginXml
 
 task writeBuildJson << {
-	def file = new File("plotprojects-example/build.json")
-	file.createNewFile()	
-	file.text = """{
+  def file = new File("plotprojects-example/build.json")
+  file.createNewFile()  
+  file.text = """{
   "ios": {
     "debug": {
       "developmentTeam": "${provisioningTeam}"
@@ -153,9 +153,9 @@ task writeBuildJson << {
 }
 
 task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
-	workingDir file(exampleProjectDir)
-	
-	commandLine 'cordova', 'build', '--device', 'ios'
+  workingDir file(exampleProjectDir)
+  
+  commandLine 'cordova', 'build', '--device', 'ios'
 }
 
 task compileAndroidExample(type: Exec, dependsOn: addPluginToExampleProject) {
@@ -169,43 +169,43 @@ task createGitCommit << {
     commandLine 'git', 'add', '--all'
   }
   exec {
-	  commandLine 'git', 'commit', '-m', "Release of ${pluginVersion}"
-	}
-	exec {
-		commandLine 'git', 'push', gitRepo, 'master'
-	}
+    commandLine 'git', 'commit', '-m', "Release of ${pluginVersion}"
+  }
+  exec {
+    commandLine 'git', 'push', gitRepo, 'master'
+  }
 }
 
 createGitCommit.mustRunAfter updatePluginXml
 
 task createGitTag(dependsOn: createGitCommit) << {
   def tagName = "${pluginVersion}"
-	exec {
-		commandLine 'git', 'tag', tagName
-	}
-	
-	exec {
-		commandLine 'git', 'push', gitRepo, tagName
-	}
+  exec {
+    commandLine 'git', 'tag', tagName
+  }
+  
+  exec {
+    commandLine 'git', 'push', gitRepo, tagName
+  }
 }
 
 task publishNpm(type: Exec) {
-	commandLine 'npm', 'publish', '.'
+  commandLine 'npm', 'publish', '.'
 }
 
 publishNpm.mustRunAfter updatePluginXml
 publishNpm.mustRunAfter createGitTag
 
 task replaceConfig {
-	description "Replaces the public token for the example app"
-	group "Release"
-	onlyIf { examplePublicToken != null }
-	mustRunAfter createGitTag
-	mustRunAfter publishNpm
+  description "Replaces the public token for the example app"
+  group "Release"
+  onlyIf { examplePublicToken != null }
+  mustRunAfter createGitTag
+  mustRunAfter publishNpm
 }
 
 replaceConfig << {
-	def newConfig = """{
+  def newConfig = """{
     |"publicToken": "${examplePublicToken}",
     |"enableOnFirstRun": true
     |}""".stripMargin()
@@ -213,13 +213,13 @@ replaceConfig << {
   new File('plotprojects-example/www/plotconfig.json').write(newConfig)
 }
 
-compileAndroidExample.mustRunAfter replaceConfig
-compileIosExample.mustRunAfter replaceConfig
+//compileAndroidExample.mustRunAfter replaceConfig
+//compileIosExample.mustRunAfter replaceConfig
 
-task compileExamples(dependsOn: ['compileAndroidExample', 'compileIosExample']) {
-	description "Compiles the examples"
-	group "Release"
-}
+/* task compileExamples(dependsOn: ['compileAndroidExample', 'compileIosExample']) {
+  description "Compiles the examples"
+  group "Release"
+}*/
 
 task staging(dependsOn: ['clean', 'updatePluginXml']) {
   description "Releases a new version of the library"
