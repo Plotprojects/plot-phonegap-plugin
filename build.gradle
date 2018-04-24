@@ -152,13 +152,13 @@ task writeBuildJson << {
 
 }
 
-task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
+/*task compileIosExample(type: Exec, dependsOn: ['addPluginToExampleProject', 'writeBuildJson']) {
   workingDir file(exampleProjectDir)
   
   commandLine 'cordova', 'build', '--device', 'ios'
-}
+}*/
 
-task compileAndroidExample(type: Exec, dependsOn: addPluginToExampleProject) {
+/*task compileAndroidExample(type: Exec, dependsOn: addPluginToExampleProject) {
   workingDir file(exampleProjectDir)
   
   commandLine 'cordova', 'build', '--device', 'android'
@@ -174,7 +174,7 @@ task createGitCommit << {
   exec {
     commandLine 'git', 'push', gitRepo, 'master'
   }
-}
+}*/
 
 createGitCommit.mustRunAfter updatePluginXml
 
