@@ -23,7 +23,7 @@
         </config-file>
 
 
-        <source-file src="src/android/Plot-v1_15_4.jar" target-dir="libs" framework="true" />
+        <source-file src="src/android/Plot-v2_4_4.aar" target-dir="libs" framework="true" />
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotRemoteHandler.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/RemoteGeotriggerHandler.java" target-dir="src/com/plotprojects/cordova" />
