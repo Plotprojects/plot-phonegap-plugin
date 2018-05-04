@@ -98,8 +98,8 @@
         <framework src="UserNotifications.framework" />
         
         <config-file parent="/*" target="config.xml">
- +            <preference name="deployment-target" value="10.0"/>
- +        </config-file>
+             <preference name="deployment-target" value="10.0"/>
+        </config-file>
  
         <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
 					<string>Your location is used in the background to instantly inform you when you are near a location that is interesting to you.</string>
