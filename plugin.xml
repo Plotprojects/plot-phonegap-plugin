@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="2.0.1">
+        version="2.1.0">
     <engines>
         <engine name="cordova" version=">=4.0.0" />
     </engines>
@@ -90,7 +90,7 @@
         <source-file src="src/ios/PlotPlotDelegate.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <source-file src="src/ios/PlotProjects.framework" framework="true" embed="true"/>
+        <framework src="PlotPlugin" type="podspec" spec="2.1.0"/>
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
@@ -99,7 +99,7 @@
         
         <config-file parent="/*" target="config.xml">
              <preference name="deployment-target" value="10.0"/>
-        </config-file>
+         </config-file>
  
         <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
 					<string>Your location is used in the background to instantly inform you when you are near a location that is interesting to you.</string>

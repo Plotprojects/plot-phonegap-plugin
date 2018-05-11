@@ -2,7 +2,7 @@ def iosSource = 'src/ios'
 def androidSource = 'src/android'
 
 def pluginVersion = System.getenv('VersionNumber')
-def iosVersionNumber = System.getenv('iOSVersionNumber').replace('.', '_').replace('-', '_')
+def iosVersionNumber = System.getenv('iOSVersionNumber')
 def androidVersionNumber = System.getenv('AndroidVersionNumber').replace('.', '_').replace('-', '_')
 
 def provisioningTeam = System.getenv('ProvisioningTeam')
@@ -19,20 +19,6 @@ task clean << {
   delete file('tmp')
 }
 
-task downloadIosReleaseZip(type: FileDownload) {
-  sourceUrl = "https://www.plotprojects.com/static/plugins/PlotProjects-iOS-v${iosVersionNumber}.zip"
-  target = iosZip
-}
-
-downloadIosReleaseZip.mustRunAfter clean
-
-task extractIosReleaseZip(type: Copy, dependsOn: downloadIosReleaseZip) {
-  def outputDir = file('tmp/ios/')
-  
-  from zipTree(iosZip)
-  into outputDir
-}
-
 task downloadAndroidReleaseZip(type: FileDownload) {
   sourceUrl = "https://www.plotprojects.com/static/plugins/Plot-Android-v${androidVersionNumber}.zip"
   target = androidZip
@@ -47,31 +33,14 @@ task extractAndroidReleaseZip(type: Copy, dependsOn: downloadAndroidReleaseZip) 
   into outputDir
 }
 
-task deleteOldVersionIos << {
-  def objectFiles = fileTree(dir: 'src/ios', includes: ['**/*.a', '**/*.framework'])
-    
-  delete objectFiles.files
-}
-
 task deleteOldVersionAndroid << {
-  def objectFiles = fileTree(dir: 'src/android', include: '**/*.aar')
+  def objectFiles = fileTree(dir: 'src/android', include: '**/*.jar')
     
   delete objectFiles.files
-}
-
-task insertIosLibrary(dependsOn: ['extractIosReleaseZip', 'deleteOldVersionIos']) << {
-  def objectFile = fileTree("tmp/ios/PlotProjects-v${iosVersionNumber}/PlotProjects.framework")
-  
-  copy {
-    from objectFile
-    into file(iosSource + "/PlotProjects.framework/")
-  }
-  
-  ext.filename = "PlotProjects.framework"
 }
 
 task insertAndroidLibrary(dependsOn: ['extractAndroidReleaseZip', 'deleteOldVersionAndroid']) << {
-  def objectFile = fileTree(dir: "tmp/android/Plot-v${androidVersionNumber}.aar").singleFile
+  def objectFile = fileTree(dir: "tmp/android/Plot-v${androidVersionNumber}.jar").singleFile
   
   copy {
     from objectFile
@@ -81,14 +50,14 @@ task insertAndroidLibrary(dependsOn: ['extractAndroidReleaseZip', 'deleteOldVers
   ext.filename = objectFile.name
 }
 
-task updatePluginXml(dependsOn: ['insertIosLibrary', 'insertAndroidLibrary']) << {
+task updatePluginXml(dependsOn: ['insertAndroidLibrary']) << {
   copy {
     from fileTree(dir: '.', include: '*.template')
     into file('.')
     
     rename '(.*)\\.template', '$1'
 
-    expand(iosObjectFile: insertIosLibrary.ext.filename,
+    expand(iosVersionNumber: iosVersionNumber,
       androidObjectFile: insertAndroidLibrary.ext.filename,
       pluginVersion: pluginVersion
       )
