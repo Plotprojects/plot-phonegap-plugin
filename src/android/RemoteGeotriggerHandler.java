@@ -5,24 +5,14 @@
 package com.plotprojects.cordova;
 
 import com.plotprojects.retail.android.Geotrigger;
-import com.plotprojects.retail.android.GeotriggerHandlerReceiver;
+import com.plotprojects.retail.android.GeotriggerHandlerBroadcastReceiver;
 
 import java.util.List;
 
-public class RemoteGeotriggerHandler extends GeotriggerHandlerReceiver {
-
-    private PlotRemoteHandler remoteHandler;
+public class RemoteGeotriggerHandler extends GeotriggerHandlerBroadcastReceiver {
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        remoteHandler = new PlotRemoteHandler(this);
-    }
-
-    @Override
-    public List<Geotrigger> handleGeotriggers(List<Geotrigger> list) {
-        remoteHandler.sendGeotriggers(list);
-        return list;
+    public List<Geotrigger> handleGeotriggers(List<Geotrigger> geotriggers) {
+        return geotriggers;
     }
 }

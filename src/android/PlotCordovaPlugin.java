@@ -53,8 +53,6 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             this.disable(callbackContext);
         } else if ("isEnabled".equals(action)) {
             this.isEnabled(callbackContext);
-        } else if ("setCooldownPeriod".equals(action)) {
-            this.setCooldownPeriod(args, callbackContext);
         } else if ("getVersion".equals(action)) {
             this.getVersion(callbackContext);
         } else if ("defaultNotificationHandler".equals(action)) {
@@ -127,14 +125,6 @@ public class PlotCordovaPlugin extends CordovaPlugin {
             if (publicKey != null) {
                 PlotConfiguration configuration = new PlotConfiguration(publicKey);
                 try {
-                    if (jsonConfiguration.has("cooldownPeriod")) {
-                        configuration.setCooldownPeriod(jsonConfiguration.getInt("cooldownPeriod"));
-                    }
-                } catch (JSONException e) {
-                    callbackContext.error("Cooldown period not specified correctly.");
-                    return;
-                }
-                try {
                     if (jsonConfiguration.has("enableOnFirstRun")) {
                         configuration.setEnableOnFirstRun(jsonConfiguration.getBoolean("enableOnFirstRun"));
                     }
@@ -175,20 +165,6 @@ public class PlotCordovaPlugin extends CordovaPlugin {
         try {
             boolean isEnabled = Plot.isEnabled();
             callbackContext.success(isEnabled ? 1 : 0);
-        } catch (Exception e) {
-            callbackContext.error(e.getMessage());
-        }
-    }
-
-    private void setCooldownPeriod(JSONArray args, CallbackContext callbackContext) {
-        try {
-            try {
-                int cooldownseconds = args.getInt(0);
-                Plot.setCooldownPeriod(cooldownseconds);
-                callbackContext.success();
-            } catch (JSONException e) {
-                callbackContext.error("Cooldown period not specified or not specified correctly.");
-            }
         } catch (Exception e) {
             callbackContext.error(e.getMessage());
         }

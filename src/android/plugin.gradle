@@ -1,0 +1,8 @@
+repositories {
+        maven {
+            url 'https://maven-repo.plotprojects.com'
+        }
+}
+dependencies {
+    compile 'com.plotprojects:plot-android:3.3.0-beta'
+}

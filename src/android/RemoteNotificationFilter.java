@@ -5,23 +5,14 @@
 package com.plotprojects.cordova;
 
 import com.plotprojects.retail.android.FilterableNotification;
-import com.plotprojects.retail.android.NotificationFilterReceiver;
+import com.plotprojects.retail.android.NotificationFilterBroadcastReceiver;
 
 import java.util.List;
 
-public class RemoteNotificationFilter extends NotificationFilterReceiver {
-
-    private PlotRemoteHandler remoteHandler;
+public class RemoteNotificationFilter extends NotificationFilterBroadcastReceiver {
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        remoteHandler = new PlotRemoteHandler(this);
-    }
-
-    @Override
-    public List<FilterableNotification> filterNotifications(List<FilterableNotification> list) {
-        return remoteHandler.filterableNotifications(list);
+    public List<FilterableNotification> filterNotifications(List<FilterableNotification> notifications) {
+        return notifications;
     }
 }

@@ -2,9 +2,9 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.plotprojects.cordova"
-        version="2.1.0">
+        version="3.0.0">
     <engines>
-        <engine name="cordova" version=">=4.0.0" />
+        <engine name="cordova" version=">=8.0.0" />
     </engines>
     <name>Plot</name>
     <description>Use the Plot library for Location Based Notifications in your Cordova/PhoneGap app.</description>
@@ -23,7 +23,8 @@
         </config-file>
 
 
-        <source-file src="src/android/Plot-v1_15_4.jar" target-dir="libs" framework="true" />
+    
+        <framework src="src/android/plugin.gradle" custom="true" type="gradleReference"/>
         <source-file src="src/android/PlotCordovaPlugin.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/PlotRemoteHandler.java" target-dir="src/com/plotprojects/cordova" />
         <source-file src="src/android/RemoteGeotriggerHandler.java" target-dir="src/com/plotprojects/cordova" />
@@ -38,37 +39,26 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-        		<activity android:name="com.plotprojects.retail.android.LandingPageActivity"
-                  android:configChanges="orientation|screenSize" />
-                  
-            <receiver android:name= "com.plotprojects.retail.android.PlotBootReceiver">
-                <intent-filter>
-                    <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                    <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                    <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                    <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                    <category android:name="android.intent.category.HOME" />
-                </intent-filter>
-            </receiver>
 
             <receiver android:exported="false" android:name="com.plotprojects.cordova.PlotCordovaNotificationOpenReceiver">
                 <intent-filter>
-                    <action android:name="$PACKAGE_NAME.plot.OpenNotification" />
+                    <action android:name="${applicationId}.plot.OpenNotification" />
                 </intent-filter>
             </receiver>
 
-            <service android:name="com.plotprojects.retail.android.PlotBackgroundService">
-                <meta-data android:name="debug" android:value="false" />
-            </service>
+            <receiver android:name="com.plotprojects.cordova.RemoteGeotriggerHandler" android:exported="false" >
+                <intent-filter>
+                    <action android:name="${applicationId}.plot.HandleGeotriggers"/>
+                </intent-filter>
+            </receiver>
 
-            <service android:name="com.plotprojects.cordova.RemoteGeotriggerHandler" android:exported="false" />
-        		<service android:name="com.plotprojects.cordova.RemoteNotificationFilter" android:exported="false" />            
+            <receiver android:name="com.plotprojects.cordova.RemoteNotificationFilter" android:exported="false" >
+                <intent-filter>
+                    <action android:name="${applicationId}.plot.FilterNotifications" />
+                </intent-filter>
+            </receiver>
+                            
             
-            <provider
-                android:authorities="$PACKAGE_NAME.plot.debuglogprovider"
-                android:name="com.plotprojects.retail.android.DebugLogProvider"
-                android:exported="true" />
         </config-file>
         
         <info>Please see our plugin documentation for more information: https://www.plotprojects.com/plot-app-library-documentation-latest/</info>

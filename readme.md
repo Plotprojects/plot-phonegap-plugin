@@ -6,7 +6,7 @@ Get location based notifications in your PhoneGap app! Now also supports iBeacon
 
 ### Supported platforms ###
 
-This plugins requires PhoneGap 4.0.0 or higher.
+This plugins requires Cordova 8.0.0 or higher.
 This plugins supports both IOS 10 or newer, and Android 2.3 or newer.
 
 ### Phonegap Build ###
@@ -82,11 +82,6 @@ plot.isEnabled(function(enabled) {
 	console.log("Failed to determine whether Plot is enabled: " + err);
 });
 ```
-
-_plot.setCooldownPeriod(cooldownSeconds, successCallback, failureCallback)_
-
-Updates the cooldown period.
-
 _plot.getVersion(resultCallback, failureCallback)_
 
 Returns the current version of the Plot plugin.
