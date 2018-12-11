@@ -331,9 +331,19 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 
 @end
 
+@class PlotConfiguration;
+
 /** The plot delegate which is used in this plot app.
  */
 @protocol PlotDelegate <NSObject>
+
+@optional
+/** Implement this method if you don't want to treat the data field as an URI and open that URI when a notification is received, but instead you want to provide a custom handler. Keep in
+   mind that notifications set to be an in-app landing page will bypass this handler.
+ * @param data The custom handler.
+ * @param response The received notification response
+ */
+-(void)plotHandleNotification:(NSString*)data response:(UNNotificationResponse*)response;
 
 @optional
 /** Implement this method if you don’t want to treat the data field as an URI and open that URI when a notification is received, but instead you want to provide a custom handler. Keep in mind that notifications set to be an in-app landing page will bypass this handler.
@@ -366,19 +376,29 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
 @optional
 -(void)plotNotificationOpenedEvent:(PlotSentNotification*)notification;
 
+@optional
+-(void)plotLoadConfig:(PlotConfiguration*)originalConfig
+       loadWithConfig:(void(^)(PlotConfiguration*))loadWithConfig;
+
 @end
 
 /** All configurations for the plot app.
  */
 @interface PlotConfiguration : NSObject
 
-/** Specify -1 to use the value of previous session. Set to 0 to allow notifications to be sent directly after another notification has been sent. Default is -1.
+/** \deprecated
+ * Specify -1 to use the value of previous session. Set to 0 to allow notifications to be sent directly after another notification has been sent. Default is -1.
  */
-@property (assign, nonatomic) int cooldownPeriod;
+@property (assign, nonatomic) int cooldownPeriod __attribute__((deprecated));
 
-/** Use to set your publicKey.
+/** \deprecated
+ * Use to set your public token.
  */
-@property (strong, nonatomic) NSString* publicKey;
+@property (strong, nonatomic) NSString* publicKey __attribute__((deprecated));
+
+/** Use to set your public token.
+ */
+@property (strong, nonatomic) NSString* publicToken;
 
 /** Delegate used for Plot, use this property for setting.
  */
@@ -407,6 +427,25 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  *  When set to false, you're responsible yourself for asking permission to send notifications.
  */
 @property (assign, nonatomic) BOOL automaticallyAskNotificationPermission;
+
+/** Enables provisional authorization for "Deliver Quietly" notifications.
+ *  This setting requires "automaticallyAskLocationPermission" to also be set to true.
+ *  When "provisionalNotificationPermission" is set to true and "automaticallyAskLocationPermission" is set to false (or not present),
+ *  the plugin will default to the automatic location services opt-in dialog (as if "automaticallyAskLocationPermission"
+ *  was set to true and "provisionalNotificationPermission" to false).
+ */
+@property (assign, nonatomic) BOOL provisionalNotificationPermission;
+
+/** Force disable QuickSync functionality. Normally it auto detects. Default is NO.
+  */
+@property (nonatomic, assign) BOOL quickSyncDisabled;
+
+/**
+ *  Enable (default) or disable background location gathering.
+ *  When set to false, region monitoring is disabled and the automaticallyAskLocationPermission
+ *  setting is set to NO.
+ */
+@property (assign, nonatomic) BOOL enableBackgroundLocation;
 
 /** Initializes this object with your publicToken and the PlotDelegate.
  * @param publicKey Your public key from plot projects.
@@ -607,6 +646,12 @@ extern NSString* const PlotGeotriggerRegionTypeBeacon;
  * for instance ("gamma_week_12")
  */
 +(void)sendAttributionEvent:(NSString *)action withItemId:(NSString *)itemId;
+
+/**
+ * Loads the closest contextual page to the users position by using either geofences or beacons.
+ */
++(void)requestContextualPage:(void (^)(NSString *result))completionHandler;
+
 
 /**
  * Only needed when method swizzling is disabled in the Firebase library and you want to make use of QuickSync. Forward the method with the

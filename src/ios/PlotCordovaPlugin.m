@@ -91,16 +91,6 @@ static PlotPlotDelegate* plotDelegate;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
--(void)setCooldownPeriod:(CDVInvokedUrlCommand*)command {
-    NSNumber* period = [command.arguments objectAtIndex:0];
-    
-    [Plot setCooldownPeriod:period.intValue];
-    
-    
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
 -(void)loadedNotifications:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
         NSMutableArray* result = [NSMutableArray array];
