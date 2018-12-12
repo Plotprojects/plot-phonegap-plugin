@@ -80,7 +80,7 @@
         <source-file src="src/ios/PlotPlotDelegate.m" />
 
         <header-file src="src/ios/Plot.h" />
-        <framework src="PlotPlugin" type="podspec" spec="2.1.0"/>
+        <framework src="PlotPlugin" type="podspec" spec="2.3.0"/>
 
         <framework src="libsqlite3.dylib" />
         <framework src="CoreLocation.framework" />
