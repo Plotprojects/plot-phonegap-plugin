@@ -4,5 +4,5 @@ repositories {
         }
 }
 dependencies {
-    compile 'com.plotprojects:plot-android:3.3.0-beta'
+    implementation 'com.plotprojects:plot-android:3.3.0-beta'
 }
