@@ -7,13 +7,14 @@ Get location based notifications in your PhoneGap app! Now also supports iBeacon
 ### Supported platforms ###
 
 This plugins requires Cordova 8.0.0 or higher.
-This plugins supports both IOS 10 or newer, and Android 2.3 or newer.
+This plugin requires Cordova-Android 7.1.4 or higher.
+This plugins supports both IOS 10 or newer, and Android 4.0 or newer.
 
 ### Phonegap Build ###
 
 You have to add the following line to `config.xml` to add our plugin:
 
-```<gap:plugin name="cordova-plotprojects" source="npm" version="2.x" />```
+```<gap:plugin name="cordova-plotprojects" source="npm" version="3.x" />```
 
 ### Installation other environments ###
 
