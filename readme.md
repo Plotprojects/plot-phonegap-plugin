@@ -28,7 +28,7 @@ Cordova/Ionic: ```cordova plugin add cordova-plotprojects```
 
 You can find the full integration guide at our website:
 
-:book: [Full Integration Guide](https://www.plotprojects.com/phonegap-integration/):book: [Quick Integration Guide](https://www.plotprojects.com/quick-install#phonegap)
+:book: [Full Integration Guide](https://files.plotprojects.com/documentation/#phonegap-integration):book: [Quick Integration Guide](https://www.plotprojects.com/quick-install#phonegap)
 
 Additional settings are possible using the configuration file, an example is shown below. The publicToken and enableOnFirstRun fields are required, the notificationSmallIcon, notificationAccentColor and askPermissionAgainAfterDays options are Android only, the maxRegionsMonitored is an iOS only setting.
 
