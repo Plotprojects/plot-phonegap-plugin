@@ -1,8 +1,8 @@
-Plot PhoneGap Plugin
+﻿Plot PhoneGap Plugin
 ====================
 Install Plot into your PhoneGap/Cordova/Ionic app quickly
 
-Get location based notifications in your PhoneGap app! Now also supports iBeacons for iOS out of the box and for Android after also integrating our Android iBeacon plugin found here: [https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons](https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons)
+Get location based notifications in your PhoneGap app! Now also supports iBeacons for iOS out of the box and for Android after also integrating our Android iBeacon plugin found [here](https://github.com/Plotprojects/plot-phonegap-plugin-androidibeacons).
 
 ### Supported platforms ###
 
@@ -26,10 +26,9 @@ Cordova/Ionic: ```cordova plugin add cordova-plotprojects```
 
 ### Integration and configuration ###
 
-You can find the integration guide at our website:
+You can find the full integration guide at our website:
 
-| :book: [Integration Guide](https://www.plotprojects.com/phonegap-integration/) |
-| :---: |
+:book: [Full Integration Guide](https://files.plotprojects.com/documentation/#phonegap-integration):book: [Quick Integration Guide](https://www.plotprojects.com/quick-install#phonegap)
 
 Additional settings are possible using the configuration file, an example is shown below. The publicToken and enableOnFirstRun fields are required, the notificationSmallIcon, notificationAccentColor and askPermissionAgainAfterDays options are Android only, the maxRegionsMonitored is an iOS only setting.
 
