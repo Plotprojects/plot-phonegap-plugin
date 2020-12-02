@@ -690,6 +690,12 @@ extern NSString* const PlotLocationKey;
  */
 +(void)didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))handler;
 
+
+/**
+ *  Flush the cached events then clear all data stored in the plugin and reset deviceId.
+ */
++(void)clearAllDataAndResetDeviceId;
+
 @end
 
 @interface PlotDebug: PlotBase
