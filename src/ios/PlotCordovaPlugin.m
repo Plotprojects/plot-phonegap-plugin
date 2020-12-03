@@ -24,14 +24,8 @@ static PlotPlotDelegate* plotDelegate;
 }
 
 +(void)didFinishLaunching:(NSNotification*)notification {
-    launchOptions = notification.userInfo;
-    if (launchOptions == nil) {
-        //launchOptions is nil when not start because of notification or url open
-        launchOptions = [NSDictionary dictionary];
-    }
-    
     plotDelegate = [[PlotPlotDelegate alloc] init];
-    [Plot initializeWithLaunchOptions:launchOptions delegate:plotDelegate];
+    [Plot initializeWithDelegate:plotDelegate];
 }
 
 -(void)pluginInitialize {

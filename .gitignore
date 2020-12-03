@@ -4,3 +4,4 @@ tmp/
 plotprojects-example/platforms/*
 plotprojects-example/plugins/*
 build.json
+/plotprojects-example/node_modules/
